@@ -129,4 +129,13 @@ struct Velocity
 	float y;
 };
 
+//The types of points that the player can eat
+//NORMAL_POINT: worth 10
+//POWER_POINT: worth 50, triggers eating enemies event for a short period of time
+//RARE_POINT: worth varies
+enum PointType { NORMAL_POINT, POWER_POINT, RARE_POINT };
+
+//The distance between the player's sprite borders and the actual image of the player 
+const int ACTUAL_EATING_DISTANCE = 8;
+
 #endif
