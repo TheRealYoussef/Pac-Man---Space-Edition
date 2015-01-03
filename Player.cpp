@@ -300,3 +300,8 @@ float Player::getTimePerFrame() const
 {
 	return time_per_frame;
 }
+
+Direction Player::getDirection() const
+{
+	return player_direction;
+}
