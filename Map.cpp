@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "Point.h"
 #include "TeleportationPair.h"
 #include "Player.h"
 #include "Tile.h"
@@ -23,6 +24,8 @@ Map::Map(const Position & position, const std::string & map_file_path)
 		readTileBoxesInfo(input);
 		readAndCreateMap(input);
 		readAndCreateTeleportationPairs(input);
+		readPointFilesAndTypes(input);
+		readAndCreatePoints(input);
 	}
 	else
 		std::cerr << "Failed to open " << map_file_path << std::endl;
@@ -138,6 +141,61 @@ void Map::readAndCreateTeleportationPairs(std::ifstream & input)
 	} while (trash != '$');
 }
 
+void Map::readPointFilesAndTypes(std::ifstream & input)
+{
+	char trash;
+	char file_path_char;
+	std::string file_path, point_type;
+	int point_value;
+	sf::Texture texture;
+	PointType temp;
+	number_of_point_files = 0;
+	do
+	{
+		input.get(trash);
+		file_path = "";
+		do
+		{
+			input.get(file_path_char);
+			if (file_path_char != '%' && file_path_char != '\n' && file_path_char != '{')
+				file_path += file_path_char;
+		} while (file_path_char != '%' && file_path_char != '{');
+		if (file_path_char != '{')
+		{
+			point_textures.push_back(texture);
+			point_textures[number_of_point_files].loadFromFile(file_path);
+			number_of_point_files++;
+			input >> point_type;
+			temp = (point_type == "NORMAL") ? NORMAL_POINT : POWER_POINT;
+			point_types.push_back(temp);
+			input >> point_value;
+			point_values.push_back(point_value);
+		}
+	} while (file_path_char != '{');
+}
+
+void Map::readAndCreatePoints(std::ifstream & input)
+{
+	int num;
+	char trash;
+	points.resize(size.row);
+	for (int i = 0; i < size.row; i++)
+		points[i].resize(size.col);
+	for (int i = 0; i < size.row; i++)
+	{
+		for (int j = 0; j < size.col; j++)
+		{
+			input >> num;
+			input >> trash;
+			if (num != 0)
+			{
+				Point temp(Position{ position.x + TILE_SIZE.width * TILE_SCALE.x * j, position.y + TILE_SIZE.height * TILE_SCALE.y * i }, point_types[num - number_of_files - 1], point_values[num - number_of_files - 1], point_textures[num - number_of_files - 1]);
+				points[i][j] = temp;
+			}
+		}
+	} 
+}
+
 void Map::display(sf::RenderWindow & window) const
 {
 	for (int i = 0; i < size.row; i++)
@@ -160,6 +218,13 @@ void Map::displayTeleportationTiles(sf::RenderWindow & window) const
 				tile_array[i][j].display(window);
 		}
 	}
+}
+
+void Map::displayPoints(sf::RenderWindow & window) const
+{
+	for (int i = 0; i < size.row; i++)
+		for (int j = 0; j < size.col; j++)
+			points[i][j].display(window);
 }
 
 bool Map::isCollidingRight(Player & object) const
@@ -230,4 +295,20 @@ void Map::teleport(Player & object) const
 {
 	for (unsigned int i = 0; i < teleportation_pairs.size(); i++)
 		teleportation_pairs[i].teleport(object);
+}
+
+void Map::eatPoint(const Player & player)
+{
+	int x = (player.getPosition().x - position.x) / (TILE_SIZE.width * TILE_SCALE.x);
+	int y = (player.getPosition().y - position.y) / (TILE_SIZE.height * TILE_SCALE.y);
+	for (int i = y - 1; i < y + 3; i++)
+	{
+		for (int j = x + 1; j < x + 3; j++)
+		{
+			if (i >= 0 && i < size.row && j >= 0 && j < size.col)
+			{
+				points[i][j].eat(player);
+			}
+		}
+	}
 }
