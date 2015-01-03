@@ -50,9 +50,11 @@ int main()
 			//button_test.setState(event, window);
 		}
 		X.move(M);
+		M.eatPoint(X);
 		//button_test.scaleSelectedButton();
 		window.clear(sf::Color(255, 255, 255));
 		M.display(window);
+		M.displayPoints(window);
 		X.display(window);
 		M.displayTeleportationTiles(window);
 		//button_test.display(window);
