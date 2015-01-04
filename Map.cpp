@@ -301,7 +301,7 @@ void Map::eatPoint(const Player & player)
 {
 	int x = (player.getPosition().x - position.x) / (TILE_SIZE.width * TILE_SCALE.x);
 	int y = (player.getPosition().y - position.y) / (TILE_SIZE.height * TILE_SCALE.y);
-	for (int i = y - 1; i < y + 3; i++)
+	for (int i = y + 1; i < y + 3; i++)
 	{
 		for (int j = x + 1; j < x + 3; j++)
 		{
