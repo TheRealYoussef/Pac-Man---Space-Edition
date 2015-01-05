@@ -39,9 +39,10 @@ void Point::eat(const Player & player)
 {
 	if (!eaten)
 	{
-		if (player.getPosition().x + ACTUAL_EATING_DISTANCE < position.x + TILE_SIZE.width * TILE_SCALE.x && player.getPosition().x + CHARACTER_SIZE.width - ACTUAL_EATING_DISTANCE > position.x && player.getPosition().y < position.y && player.getPosition().y + CHARACTER_SIZE.height > position.y + TILE_SIZE.height * TILE_SCALE.y && (player.getDirection() == RIGHT || player.getDirection() == LEFT))
+		float point_distance = (type == NORMAL_POINT) ? NORMAL_POINT_EATING_DISTANCE : 0.0f;
+		if ((player.getPosition().x + ACTUAL_EATING_DISTANCE <= position.x + TILE_SIZE.width * TILE_SCALE.x - point_distance) && (player.getPosition().x + CHARACTER_SIZE.width - ACTUAL_EATING_DISTANCE >= position.x + point_distance) && (player.getPosition().y < position.y) && (player.getPosition().y + CHARACTER_SIZE.height > position.y + TILE_SIZE.height * TILE_SCALE.y) && (player.getDirection() == RIGHT || player.getDirection() == LEFT))
 			eaten = true;
-		else if (player.getPosition().x < position.x && player.getPosition().x + CHARACTER_SIZE.width > position.x + TILE_SIZE.width * TILE_SCALE.x && player.getPosition().y + ACTUAL_EATING_DISTANCE < position.y + TILE_SIZE.height * TILE_SCALE.y && player.getPosition().y + CHARACTER_SIZE.height - ACTUAL_EATING_DISTANCE > position.y + TILE_SIZE.height && (player.getDirection() == UP || player.getDirection() == DOWN))
+		else if ((player.getPosition().x < position.x) && (player.getPosition().x + CHARACTER_SIZE.width > position.x + TILE_SIZE.width * TILE_SCALE.x) && (player.getPosition().y + ACTUAL_EATING_DISTANCE <= position.y + TILE_SIZE.height * TILE_SCALE.y - point_distance) && (player.getPosition().y + CHARACTER_SIZE.height - ACTUAL_EATING_DISTANCE >= position.y + point_distance) && (player.getDirection() == UP || player.getDirection() == DOWN))
 			eaten = true;
 	}
 }

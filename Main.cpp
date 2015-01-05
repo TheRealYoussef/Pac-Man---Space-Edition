@@ -26,14 +26,14 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Pac Man - Space Edition");
 	window.setKeyRepeatEnabled(false);
-	Player X(Position{ 400.0f - 15.0f, (600.0f - 496.0f) / 2.0f + 16.0f * 22.0f + 8.0f }, sf::seconds(0.2f), 225.0f, "Assets/Sprites/Pac Man.png");
+	Player X(Position{ 400.0f - 15.0f, (600.0f - 496.0f) / 2.0f + 16.0f * 22.0f + 8.0f }, sf::seconds(0.2f), 175.0f, "Assets/Sprites/Pac Man.png");
 	Map M(Position{ 145, ((600 - 496) / 2.0) }, "Assets/Maps/Pac Man Map.txt");
 	//ButtonArray button_test(3, Distance{ 70, 20 }, Position{ 350, 200 }, Scale{ 1.3, 1.2 }, sf::seconds(0.3), "Assets/Files/Normal Buttons File Paths.txt");
 	//ButtonArray button_test(3, Distance{ 70, 20 }, Position{ 350, 200 }, "Assets/Files/Normal Buttons File Paths.txt", "Assets/Files/Selected Buttons File Paths.txt");
 	//ButtonArray button_test(3, Distance{ 70, 20 }, Position{ 350, 200 }, Scale{ 1.3, 1.2 }, sf::seconds(0.3), "Assets/Files/Normal Buttons File Paths.txt", "Assets/Files/Selected Buttons File Paths.txt");
-	//button_test.setFunction(0, &output);
-	//button_test.setFunction(1, &output2);
-	//button_test.setFunction(2, &close);
+	/*button_test.setFunction(0, &output);
+	button_test.setFunction(1, &output2);
+	button_test.setFunction(2, &close);*/
 	ClockTime FPS;
 	int FPS_counter = 0;
 	FPS.time = sf::seconds(1);

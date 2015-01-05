@@ -45,12 +45,12 @@ struct TextureSprite
 enum TransitionType { IMAGE, SCALE, IMAGE_SCALE };
 
 //Tile is scaled by 2 in the x and y directions
-const Scale TILE_SCALE{ 2, 2 };
+const Scale TILE_SCALE{ 2.0f, 2.0f };
 
 //Tile size is 8 pixels x 8 pixels
 //Tile length and width is scaled by 2
 //Tile size changes to 16 pixels x 16 pixels 
-const Size TILE_SIZE{ 8, 8 };
+const Size TILE_SIZE{ 8.0f, 8.0f };
 
 //Defines void functions with 0 input arguments
 typedef void(*FUNCTIONS_0) ();
@@ -95,10 +95,10 @@ const int TILE_BOXES_COLS = 2;
 const int ASCII_CHAR_TO_INT_DIFF = 48;
 
 //A tile box's size is 8 pixels x 8 pixels
-const Size TILE_BOX{ 8, 8 };
+const Size TILE_BOX{ 8.0f, 8.0f };
 
 //A character's size (player or enemy) is 32 pixels x 32 pixels
-const Size CHARACTER_SIZE{ 32, 32 };
+const Size CHARACTER_SIZE{ 32.0f, 32.0f };
 
 //Direction
 //RIGHT: right (value 0)
@@ -136,6 +136,9 @@ struct Velocity
 enum PointType { NORMAL_POINT, POWER_POINT, RARE_POINT };
 
 //The distance between the player's sprite borders and the actual image of the player 
-const int ACTUAL_EATING_DISTANCE = 8;
+const float ACTUAL_EATING_DISTANCE = 1.0f;
+
+//The distance between the normal point's sprite borders and the actual image of the normal point
+const float NORMAL_POINT_EATING_DISTANCE = 8.0f;
 
 #endif
