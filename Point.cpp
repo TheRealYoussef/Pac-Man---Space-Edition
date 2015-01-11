@@ -1,54 +1,53 @@
 #include "SFML/Graphics.hpp"
 
-#include "Player.h"
 #include "Point.h"
 #include "GlobalVariables.h"
+#include "GlobalFunctions.h"
 
-Point::Point()
+pac::Point::Point()
 {
-	eaten = true;
+	eaten = pac::NOT_EATEN;
+	type = pac::NO_POINT;
 }
 
-Point::Point(const Position & position, const PointType & type, const int & value, sf::Texture & texture)
+void pac::Point::init(const pac::Position & position, const pac::PointType & type, const int & value, sf::Texture & texture)
 {
-	this->position.x = position.x;
-	this->position.y = position.y;
+	this->position = position;
 	this->type = type;
 	this->value = value;
-	image.texture = &texture;
-	image.sprite.setTexture(*(image.texture));
-	image.sprite.setScale(TILE_SCALE.x, TILE_SCALE.y);
-	image.sprite.setPosition(position.x, position.y);
-	eaten = false;
+	image.setTexture(texture);
+	image.setScale(TILE_SCALE.x, TILE_SCALE.y);
+	image.setPosition(position.x, position.y);
 }
 
-Point& Point::operator=(const Point & p)
+pac::Position pac::Point::getPosition() const
 {
-	position.x = p.position.x;
-	position.y = p.position.y;
-	type = p.type;
-	value = p.value;
-	image.sprite.setTexture(*(p.image.texture));
-	image.sprite.setScale(TILE_SCALE.x, TILE_SCALE.y);
-	image.sprite.setPosition(position.x, position.y);
-	eaten = false;
-	return *this;
+	return position;
 }
 
-void Point::eat(const Player & player)
+float pac::Point::getPointDistance() const
 {
-	if (!eaten)
+	return (type == pac::NORMAL_POINT) ? NORMAL_POINT_EATING_DISTANCE : 0.0f;
+}
+
+pac::EatenState pac::Point::getEatenState() const
+{
+	return eaten;
+}
+
+void pac::Point::eat()
+{
+	eaten = pac::EATEN;
+}
+
+void pac::Point::display(sf::RenderWindow & window) const
+{
+	if (eaten == pac::NOT_EATEN && type != pac::NO_POINT)
 	{
-		float point_distance = (type == NORMAL_POINT) ? NORMAL_POINT_EATING_DISTANCE : 0.0f;
-		if ((player.getPosition().x + ACTUAL_EATING_DISTANCE <= position.x + TILE_SIZE.width * TILE_SCALE.x - point_distance) && (player.getPosition().x + CHARACTER_SIZE.width - ACTUAL_EATING_DISTANCE >= position.x + point_distance) && (player.getPosition().y < position.y) && (player.getPosition().y + CHARACTER_SIZE.height > position.y + TILE_SIZE.height * TILE_SCALE.y) && (player.getDirection() == RIGHT || player.getDirection() == LEFT))
-			eaten = true;
-		else if ((player.getPosition().x < position.x) && (player.getPosition().x + CHARACTER_SIZE.width > position.x + TILE_SIZE.width * TILE_SCALE.x) && (player.getPosition().y + ACTUAL_EATING_DISTANCE <= position.y + TILE_SIZE.height * TILE_SCALE.y - point_distance) && (player.getPosition().y + CHARACTER_SIZE.height - ACTUAL_EATING_DISTANCE >= position.y + point_distance) && (player.getDirection() == UP || player.getDirection() == DOWN))
-			eaten = true;
+		window.draw(image);
 	}
 }
 
-void Point::display(sf::RenderWindow & window) const
+pac::Point::~Point()
 {
-	if (!eaten)
-		window.draw(image.sprite);
 }

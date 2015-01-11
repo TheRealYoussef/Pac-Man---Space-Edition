@@ -1,52 +1,40 @@
-32x31
-Assets/Sprites/Tile 1.png%WALL
-Assets/Sprites/Tile 2.png%WALL
-Assets/Sprites/Tile 3.png%WALL
-Assets/Sprites/Tile 4.png%WALL
-Assets/Sprites/Corner 1.png%WALL
-Assets/Sprites/Corner 2.png%WALL
-Assets/Sprites/Corner 3.png%WALL
-Assets/Sprites/Corner 4.png%WALL
-Assets/Sprites/Corner 1-3.png%WALL
-Assets/Sprites/Corner 2-3.png%WALL
-Assets/Sprites/Corner 1-4.png%WALL
-Assets/Sprites/Corner 2-4.png%WALL
-Assets/Sprites/Floor.png%NORMAL
-Assets/Sprites/Door.png%DOOR
-Assets/Sprites/TP 1.png%TELEPORTATION
-Assets/Sprites/TP 2.png%TELEPORTATION
-Assets/Sprites/TP 3.png%TELEPORTATION
-Assets/Sprites/TP 4.png%TELEPORTATION
-Assets/Sprites/TP 5.png%TELEPORTATION
-Assets/Sprites/TP 6.png%TELEPORTATION
-Assets/Sprites/TP 7.png%TELEPORTATION
-Assets/Sprites/TP 8.png%TELEPORTATION
-Assets/Sprites/Floor.png%INTERSECTION
-*
-1 0 1 0
-0 1 0 1
-1 1 0 0
-0 0 1 1
-0 0 1 0
-1 0 0 0
-0 1 0 0
-0 0 0 1
-1 1 1 0
-1 1 0 1
-1 0 1 1
-0 1 1 1
-0 0 0 0
-0 0 1 1
-1 1 0 0
-0 0 0 0
-0 0 1 1
-0 0 0 0
-0 0 0 0
-1 1 0 0
-0 0 0 0
-0 0 1 1
-0 0 0 0
-{
+[header]
+width=32
+height=31
+tilewidth=8
+tileheight=8
+orientation=orthogonal
+
+[tilesets]
+tileset=../../../Tile 1.png,8,8,0,0
+tileset=../../../Tile 2.png,8,8,0,0
+tileset=../../../Tile 3.png,8,8,0,0
+tileset=../../../Tile 4.png,8,8,0,0
+tileset=../../../Corner 1.png,8,8,0,0
+tileset=../../../Corner 2.png,8,8,0,0
+tileset=../../../Corner 3.png,8,8,0,0
+tileset=../../../Corner 4.png,8,8,0,0
+tileset=../../../Corner 1-3.png,8,8,0,0
+tileset=../../../Corner 2-3.png,8,8,0,0
+tileset=../../../Corner 1-4.png,8,8,0,0
+tileset=../../../Corner 2-4.png,8,8,0,0
+tileset=../../../Floor.png,8,8,0,0
+tileset=../../../Door.png,8,8,0,0
+tileset=../../../TP 1.png,8,8,0,0
+tileset=../../../TP 2.png,8,8,0,0
+tileset=../../../TP 3.png,8,8,0,0
+tileset=../../../TP 4.png,8,8,0,0
+tileset=../../../TP 5.png,8,8,0,0
+tileset=../../../TP 6.png,8,8,0,0
+tileset=../../../TP 7.png,8,8,0,0
+tileset=../../../TP 8.png,8,8,0,0
+tileset=../../../Floor.png,8,8,0,0
+tileset=../../../Point 1.png,8,8,0,0
+tileset=../../../Point 2.png,8,8,0,0
+
+[layer]
+type=Walls
+data=
 0,0,9,3,3,3,3,3,3,3,3,3,3,3,3,10,9,3,3,3,3,3,3,3,3,3,3,3,3,10,0,0,
 0,0,1,13,13,13,13,13,23,13,13,13,13,13,13,2,1,13,13,13,13,13,13,23,13,13,13,13,13,2,0,0,
 0,0,1,13,8,4,4,5,13,8,4,4,4,5,13,2,1,13,8,4,4,4,5,13,8,4,4,5,13,2,0,0,
@@ -78,11 +66,10 @@ Assets/Sprites/Floor.png%INTERSECTION
 0,0,1,13,7,3,3,3,3,3,3,3,3,6,13,7,6,13,7,3,3,3,3,3,3,3,3,6,13,2,0,0,
 0,0,1,13,13,13,13,13,13,13,13,13,13,13,23,13,13,23,13,13,13,13,13,13,13,13,13,13,13,2,0,0,
 0,0,11,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,12,0,0
-}
-0, 14, LEFT , 30, 14, RIGHT $
-Assets/Sprites/Point 1.png%NORMAL 10
-Assets/Sprites/Point 2.png%POWER 50
-{
+
+[layer]
+type=Points
+data=
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,24,24,24,24,24,24,24,24,24,24,24,24,0,0,24,24,24,24,24,24,24,24,24,24,24,24,0,0,0,
 0,0,0,24,0,0,0,0,24,0,0,0,0,0,24,0,0,24,0,0,0,0,0,24,0,0,0,0,24,0,0,0,
@@ -114,5 +101,4 @@ Assets/Sprites/Point 2.png%POWER 50
 0,0,0,24,0,0,0,0,0,0,0,0,0,0,24,0,0,24,0,0,0,0,0,0,0,0,0,0,24,0,0,0,
 0,0,0,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-}
-240 360
+

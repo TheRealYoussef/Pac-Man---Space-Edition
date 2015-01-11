@@ -3,44 +3,61 @@
 #ifndef Point_h
 #define Point_h
 
-class Player;
-
-class Point
+namespace pac
 {
-private:
+	class Point
+	{
+	private:
 
-	//
-	Position position;
+		//Point's position
+		Position position;
 
-	//
-	PointType type;
+		//Point's type (normal, power, etc.)
+		PointType type;
 
-	//
-	int value;
+		//How much does the point add to the score if eaten
+		int value;
 
-	//
-	TextureSprite image;
+		//The point's sf::Sprite 
+		sf::Sprite image;
 
-	//
-	bool eaten;
+		//Is the point eaten or not
+		EatenState eaten;
 
-public:
+		//The distance between the sprite boundaries and the actual image of the point
+		float point_distance;
 
-	//
-	Point();
+	public:
 
-	//
-	Point(const Position & position, const PointType & type, const int & value, sf::Texture & texture);
+		//Default constructor
+		Point();
 
-	//
-	Point& operator=(const Point & p);
+		//Initialize the point
+		//const Position & position: position of the point relative to the SFML window
+		//const PointType & type: type of the point
+		//const int & value: value of the point
+		//sf::Texture & texture: texture of the point
+		void init(const Position & position, const PointType & type, const int & value, sf::Texture & texture);
 
-	//
-	void eat(const Player & player);
+		//Get the point's position
+		Position getPosition() const;
 
-	//
-	void display(sf::RenderWindow & window) const;
+		//Get the point distance (the distance between the sprite boundaries and the actual image of the point)
+		float getPointDistance() const;
 
-};
+		//Get the eaten state of the point (eaten or not)
+		EatenState getEatenState() const;
+
+		//Eat the point
+		void eat();
+
+		//Display the point
+		void display(sf::RenderWindow & window) const;
+
+		//Destructor
+		~Point();
+
+	};
+}
 
 #endif

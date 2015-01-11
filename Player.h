@@ -1,119 +1,58 @@
 #include "SFML/Graphics.hpp"
 
-#include <string>
-
 #include "Map.h"
+#include "Point.h"
+#include "Character.h"
+
 #include "GlobalVariables.h"
 
 #ifndef Player_h
 #define Player_h
 
-class Player
+namespace pac
 {
-private:
-	
-	//The player's spawn position
-	Position spawn;
+	class Player : public Character
+	{
 
-	//The player's current position
-	Position position;
+	private:
 
-	//The player's sf::Texture 's and sf::Sprite 's
-	TextureSprite image[8];	
+		//The player's next direction
+		Direction next_direction;
 
-	//The player's current direction
-	Direction player_direction;
+		//Pointer to a point
+		Point *point;
 
-	//The player's next direction
-	Direction next_direction;
+		//The player's number of lives remaining
+		int number_of_lives;
 
-	//The sf::Clock and sf::Time used to control the player's animation
-	ClockTime animation;
+		//Set the player's direction
+		void setDirection(const Direction & direction, const float & time_per_frame, pac::Map & map);
 
-	//The player's current animation state
-	AnimationState animation_state;
+	public:
 
-	//Did the movement clock equal or exceed the movement time makeing the player move?
-	bool moved;
+		//Default constructor
+		Player();
 
-	//The time per frame in milliseconds (longer on slower computers and shorter on faster computers)
-	float time_per_frame;
+		//Initialize the player
+		//const Position & spawn_position: starting position of the player
+		//const float & move_speed: the player's movement speed (pixels per second)
+		//const std::string & player_file_path: the file path of the player's sprite sheet
+		//Map & map: the map the player will move in
+		void init(const Position & spawn_position, const float & move_speed, const std::string & player_file_path, Map & map);
 
-	//The sf::Clock and sf::Time used to control the player's movement
-	ClockTime movement;
+		//User clicks to choose the next direction
+		void chooseDirection(const sf::Event & event, sf::RenderWindow & window, const float & time_per_frame, Map & map);
 
-	//The distance moved by the player per millisecond
-	float move_speed_const;
+		//Execute the stored direction command (if not used, then the user will have to be exact if he wants to change his direction)
+		void executeStoredDirection(const float & time_per_frame, Map & map);
 
-	//The modified distance moved by the player based on the time per frame 
-	float move_speed;
+		//Player eats the points on the map
+		void eatPoints(Map & map);
 
-	//False until the player starts moving
-	bool started_moving;
+		//Destructor
+		~Player();
 
-	//The player's velocity
-	Velocity velocity;
-
-	//Constructor initializations
-	void setInitializations(const Position & spawn_position, const sf::Time & animation_time, const float & move_speed);
-
-	//Load player textures from the sprite sheet
-	void loadTextures(const std::string & player_file_path);
-
-	//Set the sprite textures
-	void setSprites();
-
-	//Movement at the very start of the game
-	void initialMovement(const sf::Event & sf_event);
-
-	//User presses arrow keys to choose the direction the player moves in (only if the player is not colliding in that direction)
-	void pressToChooseDirection(const sf::Event & sf_event, const Map & map);
-
-	//Calculate time per frame and movement time and move speed based on the time per frame
-	void setMoveTimeAndSpeed();
-
-	//Control the storage of a direction to move next
-	void setPlayerDirection(const Map & map);
-
-	//Set the player's velocity based on direcion and collision
-	void setPlayerVelocity(const Map & map);
-
-	//Move the player based on time
-	void movePlayer();
-
-public:
-
-	//Player constructor
-	//const Position & spawn_position: the player's spawning position
-	//const sf::Time & animation_time: the time between each animation state
-	//const float & move_speed: the player's distance moved in one second
-	//const std::string & player_file_path: the file path for the player's sprite sheet
-	Player(const Position & spawn_position, const sf::Time & animation_time, const float & move_speed, const std::string & player_file_path);
-
-	//Play the player's animation
-	void playAnimation();
-
-	//Get input from the keyboard (up, down, right, and left keys) to control the player's movement
-	void initializeMovement(const sf::Event & event, const Map & map);
-
-	//Move the player
-	void move(const Map & map);
-
-	//Get the player's current position
-	Position getPosition() const;
-
-	//Get the time taken to go through the current frame
-	float getTimePerFrame() const;
-
-	//Set the player's position
-	void setPosition(const Position & position);
-
-	//Set the player's direction
-	void setDirection(const Direction & direction);
-
-	//Display the player
-	void display(sf::RenderWindow & window) const;
-
-};
+	};
+}
 
 #endif
