@@ -51,18 +51,18 @@ void pac::Map::readImagePathsAndTileTypes(std::ifstream & input)
 		do
 		{
 			input.get(file_path_char);
-			if (file_path_char != '%' && file_path_char != '\n' && file_path_char != '*')
+			if (file_path_char != '?' && file_path_char != '\n' && file_path_char != '*')
 			{
 				file_path += file_path_char;
 			}
-		} while (file_path_char != '%' && file_path_char != '*');
+		} while (file_path_char != '?' && file_path_char != '*');
 		if (file_path_char != '*')
 		{
 			textures.push_back(texture);
 			textures[number_of_files].loadFromFile(file_path);
 			number_of_files++;
 			input >> tile_type;
-			temp = (tile_type == "WALL") ? pac::WALL : (tile_type == "NORMAL") ? pac::NORMAL : (tile_type == "INTERSECTION") ? pac::INTERSECTION : (tile_type == "TELEPORTATION") ? pac::TELEPORTATION : pac::DOOR;
+			temp = (tile_type == "WALL") ? pac::WALL : (tile_type == "NORMAL") ? pac::NORMAL : (tile_type == "TELEPORTATION") ? pac::TELEPORTATION : pac::DOOR;
 			tile_types.push_back(temp);
 		}
 	} while (file_path_char != '*');
@@ -133,7 +133,7 @@ void pac::Map::readAndCreateMap(std::ifstream & input)
 						tile_box[k][l].position.y = position.y + pac::TILE_SIZE.height * i + pac::TILE_BOX.height * k;
 					}
 				}
-				tile_array[i][j].init(pac::Position{ position.x + pac::TILE_SIZE.width * j, position.y + pac::TILE_SIZE.height * i }, tile_types[num - 1], tile_box, textures[num - 1]);
+				tile_array[i][j].init(pac::Position( position.x + pac::TILE_SIZE.width * j, position.y + pac::TILE_SIZE.height * i ), tile_types[num - 1], tile_box, textures[num - 1]);
 			}
 		}
 	}
@@ -150,13 +150,13 @@ void pac::Map::readAndCreateTeleportationPairs(std::ifstream & input)
 		input >> coordinate_1.x >> trash >> coordinate_1.y >> trash >> direction_1_str >> trash >> coordinate_2.x >> trash >> coordinate_2.y >> trash >> direction_2_str >> trash;
 		direction_1 = (direction_1_str == "RIGHT") ? pac::RIGHT : (direction_1_str == "LEFT") ? pac::LEFT : (direction_1_str == "UP") ? pac::UP : pac::DOWN;
 		direction_2 = (direction_2_str == "RIGHT") ? pac::RIGHT : (direction_2_str == "LEFT") ? pac::LEFT : (direction_2_str == "UP") ? pac::UP : pac::DOWN;
-		pac::TeleportationPairInfo temp_info{ coordinate_1, direction_1, coordinate_2, direction_2 };
+		pac::TeleportationPairInfo temp_info( coordinate_1, direction_1, coordinate_2, direction_2 );
 		teleportation_pairs_info.push_back(temp_info);
 	} while (trash != '$');
 	teleportation_pairs.resize(teleportation_pairs_info.size());
 	for (int i = 0; i < teleportation_pairs_info.size(); i++)
 	{
-		teleportation_pairs[i].init(pac::Position{ position.x + teleportation_pairs_info[i].teleporter_1_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_1_c.y * pac::TILE_SIZE.height }, teleportation_pairs_info[i].teleporter_1_d, pac::Position{ position.x + teleportation_pairs_info[i].teleporter_2_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_2_c.y * pac::TILE_SIZE.height }, teleportation_pairs_info[i].teleporter_2_d);
+		teleportation_pairs[i].init(pac::Position( position.x + teleportation_pairs_info[i].teleporter_1_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_1_c.y * pac::TILE_SIZE.height ), teleportation_pairs_info[i].teleporter_1_d, pac::Position( position.x + teleportation_pairs_info[i].teleporter_2_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_2_c.y * pac::TILE_SIZE.height ), teleportation_pairs_info[i].teleporter_2_d);
 	}
 }
 
@@ -176,11 +176,11 @@ void pac::Map::readPointFilesAndTypes(std::ifstream & input)
 		do
 		{
 			input.get(file_path_char);
-			if (file_path_char != '%' && file_path_char != '\n' && file_path_char != '{')
+			if (file_path_char != '?' && file_path_char != '\n' && file_path_char != '{')
 			{
 				file_path += file_path_char;
 			}
-		} while (file_path_char != '%' && file_path_char != '{');
+		} while (file_path_char != '?' && file_path_char != '{');
 		if (file_path_char != '{')
 		{
 			point_textures.push_back(texture);
@@ -212,7 +212,7 @@ void pac::Map::readAndCreatePoints(std::ifstream & input)
 			input >> trash;
 			if (num != 0)
 			{
-				points[i][j].init(Position{ position.x + pac::TILE_SIZE.width * j, position.y + pac::TILE_SIZE.height * i }, point_types[num - number_of_files - 1], point_values[num - number_of_files - 1], point_textures[num - number_of_files - 1]);
+				points[i][j].init(Position( position.x + pac::TILE_SIZE.width * j, position.y + pac::TILE_SIZE.height * i ), point_types[num - number_of_files - 1], point_values[num - number_of_files - 1], point_textures[num - number_of_files - 1]);
 			}
 		}
 	} 
@@ -259,7 +259,22 @@ void pac::Map::displayPoints(sf::RenderWindow & window) const
 
 pac::Coordinate pac::Map::getCoordinate(const pac::Position & position) const
 {
-	return pac::Coordinate{ (position.x - this->position.x) / (pac::TILE_SIZE.width), (position.y - this->position.y) / (pac::TILE_SIZE.height) };
+	return pac::Coordinate( (position.x - this->position.x) / (pac::TILE_SIZE.width), (position.y - this->position.y) / (pac::TILE_SIZE.height) );
+}
+
+pac::Position pac::Map::getPosition(const pac::Coordinate & coordinate) const
+{
+	return pac::Position( position.x + coordinate.x * TILE_SIZE.width, position.y + coordinate.y * TILE_SIZE.height );
+}
+
+pac::Position pac::Map::getMapPosition() const
+{
+	return position;
+}
+
+pac::GridSize pac::Map::getMapSize() const
+{
+	return size;
 }
 
 bool pac::Map::getCollidingTiles(const pac::Coordinate & coordinate, const pac::Direction & direction, pac::Tile *tiles[pac::DISTINCT_COLLIDING_TILES])
@@ -329,13 +344,13 @@ bool pac::Map::getPoint(const pac::Coordinate & coordinate, const pac::Direction
 	switch (direction)
 	{
 	case pac::RIGHT:
-		return getPoint(pac::Coordinate{ coordinate.x + 2, coordinate.y + 1 }, surrounding_points);
+		return getPoint(pac::Coordinate( coordinate.x + 2, coordinate.y + 1 ), surrounding_points);
 	case pac::LEFT:
-		return getPoint(pac::Coordinate{ coordinate.x, coordinate.y + 1 }, surrounding_points);
+		return getPoint(pac::Coordinate( coordinate.x, coordinate.y + 1 ), surrounding_points);
 	case pac::UP:
-		return getPoint(pac::Coordinate{ coordinate.x + 1, coordinate.y }, surrounding_points);
+		return getPoint(pac::Coordinate( coordinate.x + 1, coordinate.y ), surrounding_points);
 	case pac::DOWN:
-		return getPoint(pac::Coordinate{ coordinate.x + 1, coordinate.y + 2 }, surrounding_points);
+		return getPoint(pac::Coordinate( coordinate.x + 1, coordinate.y + 2 ), surrounding_points);
 	}
 }
 
@@ -352,6 +367,11 @@ bool pac::Map::getPoint(const Coordinate & coordinate, pac::Point *&surrounding_
 pac::Position pac::Map::getPlayerStartingPosition()
 {
 	return player_starting_position + position;
+}
+
+pac::TileType pac::Map::getTileType(const pac::Coordinate & coordinate) const
+{
+	return tile_array[coordinate.y][coordinate.x].getTileType();
 }
 
 pac::Map::~Map()

@@ -6,42 +6,56 @@
 namespace pac
 {
 	//Position of the object relative to the SFML window
-	struct Position
+	class Position
 	{
+	public:
+		Position(); 
+		Position(const float & x, const float & y);
 		float x;
 		float y;
-		Position& operator=(const Position & position) { x = position.x; y = position.y; return *this; }
-		Position& operator=(const sf::Vector2f & position) { x = position.x; y = position.y; return *this; }
-		Position operator+(const Position & position) { float x1 = x + position.x; float y1 = y + position.y; return Position{ x1, y1 }; }
+		Position& operator=(const Position & position);
+		Position& operator=(const sf::Vector2f & position);
+		Position operator+(const Position & position);
 	};
 
 	//Object's width and height in pixels
-	struct Size
+	class Size
 	{
+	public:
+		Size();
+		Size(const float & width, const float & height);
 		float width;
 		float height;
-		Size& operator=(const Size & size) { width = size.width; height = size.height; return *this; }
+		Size& operator=(const Size & size);
 	};
 
 	//Object's size scaling in the x and y directions
-	struct Scale
+	class Scale
 	{
+	public:
+		Scale();
+		Scale(const float & x, const float & y);
 		float x;
 		float y;
-		Scale& operator=(const Scale & scale) { x = scale.x; y = scale.y; return *this; }
+		Scale& operator=(const Scale & scale);
 	};
 
 	//Distance in the x and y directions
-	struct Distance
+	class Distance
 	{
+	public:
+		Distance();
+		Distance(const float & x, const float & y);
 		float x;
 		float y;
-		Distance& operator=(const Distance & distance) { x = distance.x; y = distance.y; return *this; }
+		Distance& operator=(const Distance & distance);
 	};
 
 	//Object's sf::texture and sf::sprite
-	struct Image
+	class Image
 	{
+	public:
+		Image();
 		sf::Texture texture;
 		sf::Sprite sprite;
 	};
@@ -53,12 +67,12 @@ namespace pac
 	enum TransitionType { IMAGE, SCALE, IMAGE_SCALE };
 
 	//Tile is scaled by 2 in the x and y directions
-	const Scale TILE_SCALE{ 2.0f, 2.0f };
+	const Scale TILE_SCALE( 2.0f, 2.0f );
 
 	//Tile size is 8 pixels x 8 pixels
 	//Tile length and width is scaled by 2
 	//Tile size changes to 16 pixels x 16 pixels 
-	const Size TILE_SIZE{ 16.0f, 16.0f };
+	const Size TILE_SIZE( 16.0f, 16.0f );
 
 	//Defines void functions with 0 input arguments
 	typedef void(*FUNCTIONS) ();
@@ -70,23 +84,28 @@ namespace pac
 	//INTERSECTION: normal tile for walking but is an intersection between 3 or more paths
 	//TELEPORTATION: special tile which teleports the object standing on it to another TELEPORTATION tile linked to it
 	//DOOR: special tile which can be passed through in one direction only
-	enum TileType { WALL, NORMAL, INTERSECTION, TELEPORTATION, DOOR, NO_TYPE };
+	enum TileType { WALL, NORMAL, TELEPORTATION, DOOR, NO_TYPE };
 
 	//A part of a tile
 	//A tile has 4 TileBox
 	//A tile box has a Position and can have a wall or not
-	struct TileBox
+	class TileBox
 	{
+	public:
+		TileBox();
 		Position position;
 		bool wall;
-		TileBox& operator=(const TileBox & tile_box) { position = tile_box.position; wall = tile_box.wall; return *this; }
+		TileBox& operator=(const TileBox & tile_box);
 	};
 
 	//Size of a grid
 	//int row: number of cells in the row
 	//int col: number of cells in the column
-	struct GridSize
+	class GridSize
 	{
+	public:
+		GridSize();
+		GridSize(const int & row, const int & col);
 		int row;
 		int col;
 	};
@@ -101,10 +120,10 @@ namespace pac
 	const int ASCII_CHAR_TO_INT_DIFF = 48;
 
 	//A tile box's size is 8 pixels x 8 pixels
-	const Size TILE_BOX{ 8.0f, 8.0f };
+	const Size TILE_BOX( 8.f, 8.f );
 
 	//A character's size (player or enemy) is 32 pixels x 32 pixels
-	const Size CHARACTER_SIZE{ 32.0f, 32.0f };
+	const Size CHARACTER_SIZE( 32.f, 32.f );
 
 	//Direction
 	//RIGHT: right (value 0)
@@ -120,8 +139,10 @@ namespace pac
 	enum AnimationState{ STATE_1, STATE_2 };
 
 	//sf::Clock and sf::Time pair
-	struct ClockTime
+	class ClockTime
 	{
+	public:
+		ClockTime();
 		sf::Clock clock;
 		sf::Time time;
 	};
@@ -129,13 +150,16 @@ namespace pac
 	//Velocity of an object
 	//float x: velocity in the x direction
 	//float y: velocity in the y direction
-	struct Velocity
+	class Velocity
 	{
+	public:
+		Velocity();
+		Velocity(const float & x, const float & y);
 		float x;
 		float y;
-		Velocity& operator=(const Velocity & velocity) { x = velocity.x; y = velocity.y; return *this; }
-		Velocity& operator=(const int & value) { x = value; y = value; return *this; }
-		bool operator!=(const int & value) { return (x != value || y != value); }
+		Velocity& operator=(const Velocity & velocity);
+		Velocity& operator=(const int & value);
+		bool operator!=(const int & value);
 	};
 
 	//The types of points that the player can eat
@@ -161,11 +185,14 @@ namespace pac
 	const int PAIR = 2;
 
 	//Coordinate in the map
-	struct Coordinate
+	class Coordinate
 	{
+	public:
+		Coordinate();
+		Coordinate(const int & x, const int & y);
 		int x;
 		int y;
-		Coordinate& operator=(const Coordinate & coordinate) { x = coordinate.x; y = coordinate.y; return *this; }
+		Coordinate& operator=(const Coordinate & coordinate);
 	};
 
 	//A character's width can cover a maximum of 3 tiles, same goes for height
@@ -175,16 +202,67 @@ namespace pac
 	enum EatenState { EATEN, NOT_EATEN };
 
 	//The information needed to create a TeleportationPair (comes from map file)
-	struct TeleportationPairInfo
+	class TeleportationPairInfo
 	{
+	public:
+		TeleportationPairInfo();
+		TeleportationPairInfo(const Coordinate & teleporter_1_c, const Direction & teleporter_1_d, const Coordinate & teleporter_2_c, const Direction & teleporter_2_d);
 		Coordinate teleporter_1_c;
 		Direction teleporter_1_d;
 		Coordinate teleporter_2_c;
 		Direction teleporter_2_d;
 	};
 
+	//The time between each switch of the player's animation states
+	const sf::Time PLAYER_ANIMATION_TIME = sf::seconds(0.1f);
+
+	//The time between each switch of the ghost's animation states
+	const sf::Time GHOST_ANIMATION_TIME = sf::seconds(0.2f);
+
+	//Right, Left, Up, Down
+	const int NUMBER_OF_POSSIBLE_DIRECTIONS = 4;
+
+	//The number of tiles infront of the player that Pinky targets
+	const int PINKY_TARGETING_DISTANCE = 4;
+
+	//If Clyde is closer than 8 tiles from the player, then he moves away. Otherwise, he moves to the player's position
+	const int CLYDE_MAXIMUM_DISTANCE_FROM_PLAYER = 8;
+
+	//A tile is a square with side == 16 pixels
+	const float TILE_SIDE_SIZE = 16.f;
+
+	//A ghost has 3 modes
+	//CHASE: follows the player using its unique targeting system
+	//SCATTER: targets its own corner of the map
+	//FRIGHTENED: moves in a random direction
+	enum GhostMode {CHASE, SCATTER, FRIGHTENED};
+
+	//The amount of time the ghosts stay in scatter mode
+	const sf::Time SCATTER_TIME = sf::seconds(5.f);
+
+	//The amount of time the ghosts stay in chase mode
+	const sf::Time CHASE_TIME = sf::seconds(20.f);
+
+	//The amount of time the ghosts stay in frightened mode
+	const sf::Time FRIGHTENED_TIME = sf::seconds(5.f);
+
 	//
-	const sf::Time player_animation_time = sf::seconds(0.15f);
+	const int MAX_FRAMES_PER_SECOND = 1000;
+
+	//
+	const float LOWEST_TIME_PER_FRAME = 1.f / MAX_FRAMES_PER_SECOND;
+
+	//
+	const float PLAYER_MOVE_SPEED = 140.f;
+
+	//
+	const float ENEMY_MOVE_SPEED = 115.f;
+
+	//
+	const float ENEMY_FRIGHTENED_MOVE_SPEED = 80.f;
+
+	//
+	const int NUMBER_OF_SAFETY_FRAMES = ((int)(0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) < 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) ? 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME) + 1 : 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME);
 
 }
 

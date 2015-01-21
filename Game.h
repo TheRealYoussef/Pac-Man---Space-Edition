@@ -1,5 +1,9 @@
 #include "Map.h"
 #include "Player.h"
+#include "Blinky.h"
+#include "Pinky.h"
+#include "Inky.h"
+#include "Clyde.h"
 
 #include "GlobalVariables.h"
 
@@ -20,6 +24,18 @@ namespace pac
 		Player player;
 
 		//
+		Blinky blinky;
+
+		//
+		Pinky pinky;
+
+		//
+		Inky inky;
+
+		//
+		Clyde clyde;
+
+		//
 		ClockTime frame;
 
 	public:
@@ -28,10 +44,7 @@ namespace pac
 		Game();
 
 		//
-		float getTimePerFrame();
-
-		//
-		void functionsInEventLoop(const sf::Event & sf_event, sf::RenderWindow & window, const float & time_per_frame);
+		void functionsInEventLoop(const sf::Event & sf_event, sf::RenderWindow & window);
 
 		//
 		void functionsInGameLoop(sf::RenderWindow & window, const float & time_per_frame);

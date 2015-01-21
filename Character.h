@@ -15,14 +15,41 @@ namespace pac
 
 	private:
 
+		//The images of the differect sprites of the character
+		Image images[NUMBER_OF_SPRITES_PER_CHARACTER];
+
 		//Pointers to the 3 tiles the character is colliding with in the direction he is moving
 		Tile *tiles[DISTINCT_COLLIDING_TILES];
 
 		//Pointers to the tile boxes of the 3 tiles the character is colliding with in the direction he is moving
 		TileBox *tile_boxes[DISTINCT_COLLIDING_TILES][TILE_BOXES_ROWS][TILE_BOXES_COLS];
 
+		//A vector of pointers to all the teleportation pairs in the map
+		std::vector <TeleportationPair*> teleportation_pairs;
+
+		//Character's sides
+		float character_right, character_left, character_up, character_down;
+
+		//Tile box's sides
+		float tile_box_right, tile_box_left, tile_box_up, tile_box_down;
+
 		//Set the character's velocity based on his direction and collision
-		void setCharacterVelocity(const float & time_per_frame, Map & map);
+		void setCharacterVelocity(Map & map, const float & time_per_frame);
+
+		//Set the velocity
+		void setVelocity(const Velocity & velocity, Map & map);
+
+		//Check the tile boxes of a tile for collision
+		bool checkTileBoxes(TileBox *tile_boxes[TILE_BOXES_ROWS][TILE_BOXES_COLS], const Direction & direction);
+
+		//Check a single tile box for collision
+		bool checkForCollision(const Direction & direction, const Position & tile_box_position);
+
+		//Set the character's sides
+		void setCharacterSides();
+
+		//Set the tile box's sides
+		void setTileBoxSides(const Position & tile_box_position);
 
 	protected:
 
@@ -38,40 +65,32 @@ namespace pac
 		//The current state of the character's animation
 		AnimationState animation_state;
 
-		//The character's movement clock and time
-		ClockTime movement;
-
 		//The character's movement speed (pixels per second)
 		float move_speed;
 
 		//The character's velocity
 		Velocity velocity;
 
-		//The images of the differect sprites of the character
-		Image images[NUMBER_OF_SPRITES_PER_CHARACTER];
-
-		//Did the movement clock reach or exceed the movement time?
-		bool moved;
-
-		//Is the character colliding with a wall in the direction specified?
-		bool isColliding(const Direction & direction, const float & time_per_frame, Map & map);
-
 		//Move the character without checking for collision
 		bool move_without_checking;
 
-		//A vector of pointers to all the teleportation pairs in the map
-		std::vector <TeleportationPair*> teleportation_pairs;
-
-		//Set the velocity
-		void setVelocity(const Velocity & velocity, const float & time_per_frame, Map & map);
+		//Is the character colliding with a wall in the direction specified?
+		bool isColliding(const Direction & direction, Map & map);
 
 	public:
 
 		//Default constructor
 		Character();
+		
+		//Initialize the character
+		//const Position & spawn_position: starting position of the character
+		//const float & move_speed: the character's movement speed (pixels per second)
+		//const std::string & file_path: the file path of the character's sprite sheet
+		//Map & map: the map the character will move in
+		void init(const Position & spawn_position, const std::string & file_path, Map & map);
 
 		//Move the character (including collision and teleportation)
-		//For teleportation to work, initTele(pac::Map & map) has to be called 
+		//For teleportation to work, initTele(Map & map) has to be called 
 		void move(Map & map, const float & time_per_frame);
 
 		//Alternate between the character's 2 animation states
@@ -88,6 +107,10 @@ namespace pac
 
 		//Get the character's current position
 		Position getPosition() const;
+
+		//Doesn't check for collision the next frame
+		//You have to be sure, however, that there wont be any collision the next frame when using this function
+		void dontCheckCollision();
 
 		//Display the character
 		void display(sf::RenderWindow & window) const;

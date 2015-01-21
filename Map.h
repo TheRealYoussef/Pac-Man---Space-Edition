@@ -88,7 +88,7 @@ namespace pac
 		void readAndCreatePoints(std::ifstream & input);
 
 		//Get a point in the specified coordinate and return true if successful
-		bool getPoint(const Coordinate & coordinate, pac::Point *&surrounding_points);
+		bool getPoint(const Coordinate & coordinate, Point *&surrounding_points);
 
 	public:
 
@@ -112,6 +112,15 @@ namespace pac
 		//Get the coordinate of an object on the map
 		Coordinate getCoordinate(const Position & position) const;
 
+		//Get the position of an object on the map
+		Position getPosition(const Coordinate & coordinate) const;
+
+		//Get the map's position in the window
+		Position getMapPosition() const;
+
+		//Get the map's size
+		GridSize getMapSize() const;
+
 		//Return pointers to the 3 tiles colliding with an object in the direction the object is moving
 		bool getCollidingTiles(const Coordinate & coordinate, const Direction & direction, Tile *tiles[DISTINCT_COLLIDING_TILES]);
 
@@ -123,6 +132,9 @@ namespace pac
 
 		//Get the player's starting position in the map
 		Position getPlayerStartingPosition();
+
+		//Get the type of the tile of the specified coordinate
+		TileType getTileType(const Coordinate & coordinate) const;
 
 		//Destructor
 		~Map();

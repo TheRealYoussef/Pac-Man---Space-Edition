@@ -13,25 +13,35 @@
 
 pac::Character::Character()
 {
-	moved = true;
 	move_without_checking = false;
-	animation_state = pac::STATE_2;
+	animation_state = pac::STATE_1;
 	animation.clock.restart();
-	movement.clock.restart();
+}
+
+void pac::Character::init(const pac::Position & spawn_position, const std::string & file_path, pac::Map & map)
+{
+	map.getTeleportationPairs(teleportation_pairs);
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
+	{
+		images[i].texture.loadFromFile(file_path, sf::IntRect(0.f, pac::CHARACTER_SIZE.width / 2 * i, pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.height));
+	}
+	for (int i = 1; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
+	{
+		images[i].texture.loadFromFile(file_path, sf::IntRect(pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.width / 2 * i - pac::CHARACTER_SIZE.width / 2, pac::CHARACTER_SIZE.height, pac::CHARACTER_SIZE.height));
+	}
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	{
+		images[i].sprite.setTexture(images[i].texture);
+		images[i].sprite.setPosition(spawn_position.x, spawn_position.y);
+	}
 }
 
 void pac::Character::move(pac::Map & map, const float & time_per_frame)
 {
-	setCharacterVelocity(time_per_frame, map);
-	movement.time = sf::seconds(time_per_frame);
-	if (movement.clock.getElapsedTime() >= movement.time)
+	setCharacterVelocity(map, time_per_frame);
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
 	{
-		for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
-		{
-			images[i].sprite.move(velocity.x, velocity.y);
-		}
-		moved = true;
-		movement.clock.restart();
+		images[i].sprite.move(velocity.x, velocity.y);
 	}
 	for (int i = 0; i < teleportation_pairs.size(); i++)
 	{
@@ -39,33 +49,33 @@ void pac::Character::move(pac::Map & map, const float & time_per_frame)
 	}
 }
 
-void pac::Character::setCharacterVelocity(const float & time_per_frame, pac::Map & map)
+void pac::Character::setCharacterVelocity(pac::Map & map, const float & time_per_frame)
 {
 	switch (direction)
 	{
 	case pac::RIGHT:
-		setVelocity(pac::Velocity{ move_speed * time_per_frame, 0 }, time_per_frame, map);
+		setVelocity(pac::Velocity(move_speed * time_per_frame, 0), map);
 		break;
 	case pac::LEFT:
-		setVelocity(pac::Velocity{ -move_speed * time_per_frame, 0 }, time_per_frame, map);
+		setVelocity(pac::Velocity(-move_speed * time_per_frame, 0), map);
 		break;
 	case pac::UP:
-		setVelocity(pac::Velocity{ 0, -move_speed * time_per_frame }, time_per_frame, map);
+		setVelocity(pac::Velocity(0, -move_speed * time_per_frame), map);
 		break;
 	case pac::DOWN:
-		setVelocity(pac::Velocity{ 0, move_speed * time_per_frame }, time_per_frame, map);
+		setVelocity(pac::Velocity(0, move_speed * time_per_frame), map);
 		break;
 	}
 }
 
-void pac::Character::setVelocity(const pac::Velocity & velocity, const float & time_per_frame, Map & map)
+void pac::Character::setVelocity(const pac::Velocity & velocity, Map & map)
 {
 	if (move_without_checking)
 	{
 		move_without_checking = false;
 		this->velocity = velocity;
 	}
-	else if (!isColliding(direction, time_per_frame, map))
+	else if (!isColliding(direction, map))
 	{
 		this->velocity = velocity;
 	}
@@ -75,7 +85,7 @@ void pac::Character::setVelocity(const pac::Velocity & velocity, const float & t
 	}
 }
 
-bool pac::Character::isColliding(const Direction & direction, const float & time_per_frame, pac::Map & map)
+bool pac::Character::isColliding(const Direction & direction, pac::Map & map)
 {
 	coordinate = map.getCoordinate(getPosition());
 	if (map.getCollidingTiles(coordinate, direction, tiles))
@@ -86,61 +96,97 @@ bool pac::Character::isColliding(const Direction & direction, const float & time
 		}
 		for (int i = 0; i < pac::DISTINCT_COLLIDING_TILES; i++)
 		{
-			for (int j = 0; j < pac::TILE_BOXES_ROWS; j++)
+			if (checkTileBoxes(tile_boxes[i], direction))
 			{
-				for (int k = 0; k < pac::TILE_BOXES_COLS; k++)
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool pac::Character::checkTileBoxes(pac::TileBox *tile_boxes[TILE_BOXES_ROWS][TILE_BOXES_COLS], const pac::Direction & direction)
+{
+	for (int i = 0; i < pac::TILE_BOXES_ROWS; i++)
+	{
+		for (int j = 0; j < pac::TILE_BOXES_COLS; j++)
+		{
+			if (tile_boxes[i][j]->wall)
+			{
+				if (checkForCollision(direction, tile_boxes[i][j]->position))
 				{
-					if (tile_boxes[i][j][k]->wall)
-					{
-						switch (direction)
-						{
-						case RIGHT:
-							if (biggerThanOrEqual(round(getPosition().x) + pac::CHARACTER_SIZE.width + time_per_frame, tile_boxes[i][j][k]->position.x) && lessThan(getPosition().x, tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width) && lessThan(round(getPosition().y), tile_boxes[i][j][k]->position.y + pac::TILE_BOX.height) && biggerThan(round(getPosition().y) + pac::CHARACTER_SIZE.height, tile_boxes[i][j][k]->position.y))
-							{
-								if (notEqual(getPosition().x + pac::CHARACTER_SIZE.width, tile_boxes[i][j][k]->position.x))
-								{
-									setPosition(pac::Position{ tile_boxes[i][j][k]->position.x - pac::CHARACTER_SIZE.width, getPosition().y });
-								}
-								return true;
-							}
-							break;
-						case LEFT:
-							if (lessThanOrEqual(round(getPosition().x) - time_per_frame, tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width) && biggerThan(getPosition().x + pac::CHARACTER_SIZE.width, tile_boxes[i][j][k]->position.x) && lessThan(round(getPosition().y), tile_boxes[i][j][k]->position.y + pac::TILE_BOX.height) && biggerThan(round(getPosition().y) + pac::CHARACTER_SIZE.height, tile_boxes[i][j][k]->position.y))
-							{
-								if (notEqual(getPosition().x, tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width))
-								{
-									setPosition(pac::Position{ tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width, getPosition().y });
-								}
-								return true;
-							}
-							break;
-						case UP:
-							if (lessThanOrEqual(round(getPosition().y) - time_per_frame, tile_boxes[i][j][k]->position.y + pac::TILE_BOX.height) && biggerThan(getPosition().y + pac::CHARACTER_SIZE.height, tile_boxes[i][j][k]->position.y) && lessThan(round(getPosition().x), tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width) && biggerThan(round(getPosition().x) + pac::CHARACTER_SIZE.width, tile_boxes[i][j][k]->position.x))
-							{
-								if (notEqual(getPosition().y, tile_boxes[i][j][k]->position.y + pac::TILE_BOX.width))
-								{
-									setPosition(pac::Position{ getPosition().x, tile_boxes[i][j][k]->position.y + pac::TILE_BOX.height });
-								}
-								return true;
-							}
-							break;
-						case DOWN:
-							if (biggerThanOrEqual(round(getPosition().y) + pac::CHARACTER_SIZE.height + time_per_frame, tile_boxes[i][j][k]->position.y) && lessThan(getPosition().y, tile_boxes[i][j][k]->position.y + pac::TILE_BOX.height) && lessThan(round(getPosition().x), tile_boxes[i][j][k]->position.x + pac::TILE_BOX.width) && biggerThan(round(getPosition().x) + pac::CHARACTER_SIZE.width, tile_boxes[i][j][k]->position.x))
-							{
-								if (notEqual(getPosition().y + pac::CHARACTER_SIZE.height, tile_boxes[i][j][k]->position.y))
-								{
-									setPosition(pac::Position{ getPosition().x, tile_boxes[i][j][k]->position.y - pac::CHARACTER_SIZE.height });
-								}
-								return true;
-							}
-							break;
-						}
-					}
+					return true;
 				}
 			}
 		}
 	}
 	return false;
+}
+
+bool pac::Character::checkForCollision(const pac::Direction & direction, const pac::Position & tile_box_position)
+{
+	setCharacterSides();
+	setTileBoxSides(tile_box_position);
+	switch (direction)
+	{
+	case RIGHT:
+		if (character_right >= tile_box_left && character_left < tile_box_right && character_up < tile_box_down && character_down > tile_box_up)
+		{
+			if (character_right != tile_box_left)
+			{
+				setPosition(pac::Position(tile_box_left - CHARACTER_SIZE.width, getPosition().y));
+			}
+			return true;
+		}
+		break;
+	case LEFT:
+		if (character_left <= tile_box_right && character_right > tile_box_left && character_up < tile_box_down && character_down > tile_box_up)
+		{
+			if (character_left != tile_box_right)
+			{
+				setPosition(pac::Position(tile_box_right, getPosition().y));
+			}
+			return true;
+		}
+		break;
+	case UP:
+		if (character_up <= tile_box_down && character_down > tile_box_up && character_left < tile_box_right && character_right > tile_box_left)
+		{
+			if (character_up != tile_box_down)
+			{
+				setPosition(pac::Position(getPosition().x, tile_box_down));
+			}
+			return true;
+		}
+		break;
+	case DOWN:
+		if (character_down >= tile_box_up && character_up < tile_box_down && character_left < tile_box_right && character_right > tile_box_left)
+		{
+			if (character_down != tile_box_up)
+			{
+				setPosition(pac::Position(getPosition().x, tile_box_up - CHARACTER_SIZE.height));
+			}
+			return true;
+		}
+		break;
+	}
+	return false;
+}
+
+void pac::Character::setCharacterSides()
+{
+	character_right = round(getPosition().x) + pac::CHARACTER_SIZE.width;
+	character_left = round(getPosition().x);
+	character_up = round(getPosition().y);
+	character_down = round(getPosition().y) + pac::CHARACTER_SIZE.height;
+}
+
+void pac::Character::setTileBoxSides(const pac::Position & tile_box_position)
+{
+	tile_box_right = tile_box_position.x + pac::TILE_BOX.width;
+	tile_box_left = tile_box_position.x;
+	tile_box_up = tile_box_position.y;
+	tile_box_down = tile_box_position.y + pac::TILE_BOX.height;
 }
 
 void pac::Character::playAnimation()
@@ -175,9 +221,13 @@ void pac::Character::setPosition(const pac::Position & position)
 
 pac::Position pac::Character::getPosition() const
 {
-	return pac::Position{ images[0].sprite.getPosition().x, images[0].sprite.getPosition().y };
+	return pac::Position( images[0].sprite.getPosition().x, images[0].sprite.getPosition().y );
 }
 
+void pac::Character::dontCheckCollision()
+{
+	move_without_checking = true;
+}
 
 void pac::Character::display(sf::RenderWindow & window) const
 {

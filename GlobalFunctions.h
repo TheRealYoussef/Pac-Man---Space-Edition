@@ -1,3 +1,5 @@
+#include "GlobalVariables.h"
+
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
@@ -18,5 +20,8 @@ bool biggerThan(const float & arg1, const float & arg2);
 
 //Is arg1 < arg2?
 bool lessThan(const float & arg1, const float & arg2);
+
+//Opposite of Right is Left and opposite of Up is Down and vice versa
+pac::Direction opposite(const pac::Direction & direction);
 
 #endif

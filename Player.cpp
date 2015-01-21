@@ -1,62 +1,43 @@
 #include "SFML/Graphics.hpp"
 #include "Map.h"
 #include "Point.h"
-#include "Character.h"
 #include "Player.h"
 #include "GlobalVariables.h"
 #include "GlobalFunctions.h"
 
 pac::Player::Player()
 {
-}
-
-void pac::Player::init(const pac::Position & spawn_position, const float & move_speed, const std::string & player_file_path, pac::Map & map)
-{
-	animation.time = player_animation_time;
-	this->move_speed = move_speed;
-	direction = pac::RIGHT;
 	next_direction = pac::NONE;
-	map.getTeleportationPairs(teleportation_pairs);
-	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
-	{
-		images[i].texture.loadFromFile(player_file_path, sf::IntRect(0.f, pac::CHARACTER_SIZE.width / 2 * i, pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.height));
-	}
-	for (int i = 1; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
-	{
-		images[i].texture.loadFromFile(player_file_path, sf::IntRect(pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.width / 2 * i - pac::CHARACTER_SIZE.width / 2, pac::CHARACTER_SIZE.height, pac::CHARACTER_SIZE.height));
-	}
-	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
-	{
-		images[i].sprite.setTexture(images[i].texture);
-		images[i].sprite.setPosition(spawn_position.x, spawn_position.y);
-	}
+	direction = pac::RIGHT;
+	this->animation.time = pac::PLAYER_ANIMATION_TIME;
+	move_speed = pac::PLAYER_MOVE_SPEED;
 }
 
-void pac::Player::chooseDirection(const sf::Event & event, sf::RenderWindow & window, const float & time_per_frame, pac::Map & map)
+void pac::Player::chooseDirection(const sf::Event & event, sf::RenderWindow & window, pac::Map & map)
 {
 	if (event.type == sf::Event::KeyPressed)
 	{
 		switch (event.key.code)
 		{
 		case sf::Keyboard::Right:
-			setDirection(pac::RIGHT, time_per_frame, map);
+			setDirection(pac::RIGHT, map);
 			break;
 		case sf::Keyboard::Left:
-			setDirection(pac::LEFT, time_per_frame, map);
+			setDirection(pac::LEFT, map);
 			break;
 		case sf::Keyboard::Up:
-			setDirection(pac::UP, time_per_frame, map);
+			setDirection(pac::UP, map);
 			break;
 		case sf::Keyboard::Down:
-			setDirection(pac::DOWN, time_per_frame, map);
+			setDirection(pac::DOWN, map);
 			break;
 		}
 	}
 }
 
-void pac::Player::setDirection(const pac::Direction & direction, const float & time_per_frame, pac::Map & map)
+void pac::Player::setDirection(const pac::Direction & direction, pac::Map & map)
 {
-	if (!isColliding(direction, time_per_frame, map))
+	if (!isColliding(direction, map))
 	{
 		move_without_checking = true;
 		next_direction = pac::NONE;
@@ -95,11 +76,11 @@ void pac::Player::eatPoints(pac::Map & map)
 	}
 }
 
-void pac::Player::executeStoredDirection(const float & time_per_frame, pac::Map & map)
+void pac::Player::executeStoredDirection(pac::Map & map)
 {
 	if (next_direction != pac::NONE)
 	{
-		if (!isColliding(next_direction, time_per_frame, map))
+		if (!isColliding(next_direction, map))
 		{
 			this->direction = next_direction;
 			next_direction = pac::NONE;

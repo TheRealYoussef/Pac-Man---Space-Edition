@@ -209,7 +209,7 @@ bool pac::ButtonArray::mouseOnButton(const sf::Event & event, sf::RenderWindow &
 {
 	for (int i = 0; i < number_of_buttons; i++)
 	{
-		if (sf::Mouse::getPosition(window).x >= normal_state_images[i].sprite.getPosition().x - normal_state_images[i].sprite.getLocalBounds().width / 2.0 && sf::Mouse::getPosition(window).x <= normal_state_images[i].sprite.getPosition().x + normal_state_images[i].sprite.getLocalBounds().width / 2.0 && sf::Mouse::getPosition(window).y >= normal_state_images[i].sprite.getPosition().y - normal_state_images[i].sprite.getLocalBounds().height / 2.0 && sf::Mouse::getPosition(window).y <= normal_state_images[i].sprite.getPosition().y + normal_state_images[i].sprite.getLocalBounds().height / 2.0)
+		if (sf::Mouse::getPosition(window).x >= normal_state_images[i].sprite.getPosition().x - normal_state_images[i].sprite.getLocalBounds().width / 2.f && sf::Mouse::getPosition(window).x <= normal_state_images[i].sprite.getPosition().x + normal_state_images[i].sprite.getLocalBounds().width / 2.f && sf::Mouse::getPosition(window).y >= normal_state_images[i].sprite.getPosition().y - normal_state_images[i].sprite.getLocalBounds().height / 2.f && sf::Mouse::getPosition(window).y <= normal_state_images[i].sprite.getPosition().y + normal_state_images[i].sprite.getLocalBounds().height / 2.f)
 		{
 			if (i == selected_button_index)
 			{
@@ -230,7 +230,7 @@ bool pac::ButtonArray::mouseOnSelectedButton(const sf::Event & event, sf::Render
 {
 	if (selected_button_index != -1)
 	{
-		return (sf::Mouse::getPosition(window).x >= normal_state_images[selected_button_index].sprite.getPosition().x - normal_state_images[selected_button_index].sprite.getLocalBounds().width / 2.0 && sf::Mouse::getPosition(window).x <= normal_state_images[selected_button_index].sprite.getPosition().x + normal_state_images[selected_button_index].sprite.getLocalBounds().width / 2.0 && sf::Mouse::getPosition(window).y >= normal_state_images[selected_button_index].sprite.getPosition().y - normal_state_images[selected_button_index].sprite.getLocalBounds().height / 2.0 && sf::Mouse::getPosition(window).y <= normal_state_images[selected_button_index].sprite.getPosition().y + normal_state_images[selected_button_index].sprite.getLocalBounds().height / 2.0);
+		return (sf::Mouse::getPosition(window).x >= normal_state_images[selected_button_index].sprite.getPosition().x - normal_state_images[selected_button_index].sprite.getLocalBounds().width / 2.f && sf::Mouse::getPosition(window).x <= normal_state_images[selected_button_index].sprite.getPosition().x + normal_state_images[selected_button_index].sprite.getLocalBounds().width / 2.f && sf::Mouse::getPosition(window).y >= normal_state_images[selected_button_index].sprite.getPosition().y - normal_state_images[selected_button_index].sprite.getLocalBounds().height / 2.f && sf::Mouse::getPosition(window).y <= normal_state_images[selected_button_index].sprite.getPosition().y + normal_state_images[selected_button_index].sprite.getLocalBounds().height / 2.f);
 	}
 	return false;
 }
@@ -275,8 +275,8 @@ void pac::ButtonArray::scaleButton(std::vector <pac::Image> & images)
 	{
 		if (scale_bool)
 		{
-			double m_x = pow(scale_amount.x, 1.0 / scale.time.asSeconds());
-			double m_y = pow(scale_amount.y, 1.0 / scale.time.asSeconds());
+			double m_x = pow(scale_amount.x, 1.f / scale.time.asSeconds());
+			double m_y = pow(scale_amount.y, 1.f / scale.time.asSeconds());
 			images[selected_button_index].sprite.setScale(pow(m_x, scale.clock.getElapsedTime().asSeconds()), pow(m_y, scale.clock.getElapsedTime().asSeconds()));
 		}
 		if (scale.clock.getElapsedTime() >= scale.time)

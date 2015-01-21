@@ -39,19 +39,19 @@ void pac::TeleportationPair::switchEnter(pac::Character & character, const pac::
 	switch (direction_1)
 	{
 	case RIGHT:
-		if (biggerThanOrEqual(character.getPosition().x, position_1.x) && equal(round(character.getPosition().y), position_1.y - pac::TILE_BOX.height))
+		if (biggerThanOrEqual(character.getPosition().x, position_1.x) && equal(round(character.getPosition().y), position_1.y - pac::TILE_BOX.height) && character.getDirection() == pac::RIGHT)
 			switchLeave(character, direction_2, position_2);
 		break;
 	case LEFT:
-		if (lessThanOrEqual(character.getPosition().x, position_1.x) && equal(round(character.getPosition().y), position_1.y - pac::TILE_BOX.height))
+		if (lessThanOrEqual(character.getPosition().x, position_1.x) && equal(round(character.getPosition().y), position_1.y - pac::TILE_BOX.height) && character.getDirection() == pac::LEFT)
 			switchLeave(character, direction_2, position_2);
 		break;
 	case UP:
-		if (equal(round(character.getPosition().x), position_1.x - pac::TILE_BOX.width) && lessThanOrEqual(character.getPosition().y, position_1.y))
+		if (equal(round(character.getPosition().x), position_1.x - pac::TILE_BOX.width) && lessThanOrEqual(character.getPosition().y, position_1.y) && character.getDirection() == pac::UP)
 			switchLeave(character, direction_2, position_2);
 		break;
 	case DOWN:
-		if (equal(round(character.getPosition().x), position_1.x - pac::TILE_BOX.width) && biggerThanOrEqual(character.getPosition().y, position_1.y))
+		if (equal(round(character.getPosition().x), position_1.x - pac::TILE_BOX.width) && biggerThanOrEqual(character.getPosition().y, position_1.y) && character.getDirection() == pac::DOWN)
 			switchLeave(character, direction_2, position_2);
 		break;
 	}
@@ -62,20 +62,24 @@ void pac::TeleportationPair::switchLeave(pac::Character & character, const pac::
 	switch (direction)
 	{
 	case pac::RIGHT:
-		character.setPosition(pac::Position{ position.x - 1, position.y - pac::TILE_BOX.height });
-		character.setDirection(pac::LEFT);
+		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
+		character.setDirection(opposite(direction));
+		character.dontCheckCollision();
 		break;
 	case pac::LEFT:
-		character.setPosition(pac::Position{ position.x + 1, position.y - pac::TILE_BOX.height });
-		character.setDirection(pac::RIGHT);
+		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
+		character.setDirection(opposite(direction));
+		character.dontCheckCollision();
 		break;
 	case pac::UP:
-		character.setPosition(pac::Position{ position.x - pac::TILE_BOX.width, position.y + 1 });
-		character.setDirection(pac::DOWN);
+		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
+		character.setDirection(opposite(direction));
+		character.dontCheckCollision();
 		break;
 	case pac::DOWN:
-		character.setPosition(pac::Position{ position.x - pac::TILE_BOX.width, position.y - 1 });
-		character.setDirection(pac::UP);
+		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
+		character.setDirection(opposite(direction));
+		character.dontCheckCollision();
 		break;
 	}
 }
