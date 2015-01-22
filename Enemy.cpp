@@ -9,9 +9,6 @@
 pac::Enemy::Enemy()
 {
 	animation.time = pac::GHOST_ANIMATION_TIME;
-	scatter.time = pac::SCATTER_TIME;
-	chase.time = pac::CHASE_TIME;
-	frightened.time = pac::FRIGHTENED_TIME;
 	mode = pac::SCATTER;
 	forced_switch = false;
 	previous_directions.resize(pac::NUMBER_OF_SAFETY_FRAMES);
@@ -20,7 +17,7 @@ pac::Enemy::Enemy()
 		previous_directions[i] = direction;
 	}
 	move_speed = pac::ENEMY_MOVE_SPEED;
-	scatter.clock.restart();
+	scatter_clock.restart();
 }
 
 void pac::Enemy::setScatterPosition(const pac::Map & map, const pac::Coordinate & coordinate)
@@ -70,12 +67,15 @@ void pac::Enemy::compareWithCurrentDirection(const bool & same_direction)
 {
 	for (int i = 0; i < pac::NUMBER_OF_POSSIBLE_DIRECTIONS; i++)
 	{
-		if (checkPreviousDirectionsOpposites((pac::Direction)i) && checkPreviousDirections((pac::Direction)i) && distances[i] != -1.0)
+		if (distances[i] != -1.f)
 		{
-			if (distances[i] < distances[direction])
+			if (checkPreviousDirectionsOpposites((pac::Direction)i) && checkPreviousDirections((pac::Direction)i))
 			{
-				direction = (pac::Direction)i;
-				this->same_direction = same_direction;
+				if (distances[i] < distances[direction])
+				{
+					direction = (pac::Direction)i;
+					this->same_direction = same_direction;
+				}
 			}
 		}
 	}
@@ -97,10 +97,13 @@ void pac::Enemy::getOtherDirection()
 {
 	for (int i = 0; i < pac::NUMBER_OF_POSSIBLE_DIRECTIONS; i++)
 	{
-		if (checkPreviousDirectionsOpposites((pac::Direction)i) && checkPreviousDirections((pac::Direction)i) && distances[i] != -1.0)
+		if (distances[i] != -1.f)
 		{
-			direction = (pac::Direction)i;
-			break;
+			if (checkPreviousDirectionsOpposites((pac::Direction)i) && checkPreviousDirections((pac::Direction)i))
+			{
+				direction = (pac::Direction)i;
+				break;
+			}
 		}
 	}
 }
@@ -110,11 +113,11 @@ void pac::Enemy::changeMode()
 	switch (mode)
 	{
 	case pac::CHASE:
-		if (chase.clock.getElapsedTime() >= chase.time)
+		if (chase_clock.getElapsedTime() >= pac::CHASE_TIME)
 		{
 			mode = pac::SCATTER;
 			forced_switch = false;
-			scatter.clock.restart();
+			scatter_clock.restart();
 		}
 		break;
 	case pac::SCATTER:
@@ -129,17 +132,17 @@ void pac::Enemy::changeMode()
 			forced_switch = true;
 		}
 		target_position = scatter_position;
-		if (scatter.clock.getElapsedTime() >= scatter.time)
+		if (scatter_clock.getElapsedTime() >= pac::SCATTER_TIME)
 		{
 			mode = pac::CHASE;
-			chase.clock.restart();
+			chase_clock.restart();
 		}
 		break;
 	case pac::FRIGHTENED:
-		if (frightened.clock.getElapsedTime() >= frightened.time)
+		if (frightened_clock.getElapsedTime() >= pac::FRIGHTENED_TIME)
 		{
 			mode = pac::CHASE;
-			chase.clock.restart();
+			chase_clock.restart();
 		}
 		break;
 	}

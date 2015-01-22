@@ -11,10 +11,10 @@ namespace pac
 
 	public:
 
-		//
+		//Default constructor
 		Pinky();
 
-		//
+		//Target 4 tiles infront of the player
 		void targetInfrontOfPlayer(const Player & player);
 
 	};

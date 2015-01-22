@@ -106,9 +106,6 @@ namespace pac
 		//Display the tiles of TELEPORTATION type
 		void displayTeleportationTiles(sf::RenderWindow & window) const;
 
-		//Display the points
-		void displayPoints(sf::RenderWindow & window) const;
-
 		//Get the coordinate of an object on the map
 		Coordinate getCoordinate(const Position & position) const;
 

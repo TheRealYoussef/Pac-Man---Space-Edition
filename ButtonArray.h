@@ -54,7 +54,7 @@ namespace pac
 		//If the user uses the scale function when the transition type is IMAGE, then an error message is displayed once
 		bool error_message_displayed;
 
-		//
+		//The number of functions each button has
 		std::vector <int> number_of_functions;
 
 		//Parse file containg the file paths of the images of the buttons in one of their 2 states (normal or selected)

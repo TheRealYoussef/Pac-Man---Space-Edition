@@ -228,6 +228,7 @@ void pac::Map::display(sf::RenderWindow & window) const
 			{
 				tile_array[i][j].display(window);
 			}
+			points[i][j].display(window);
 		}
 	}
 }
@@ -244,17 +245,7 @@ void pac::Map::displayTeleportationTiles(sf::RenderWindow & window) const
 			}
 		}
 	}
-}
 
-void pac::Map::displayPoints(sf::RenderWindow & window) const
-{
-	for (int i = 0; i < size.row; i++)
-	{
-		for (int j = 0; j < size.col; j++)
-		{
-			points[i][j].display(window);
-		}
-	}
 }
 
 pac::Coordinate pac::Map::getCoordinate(const pac::Position & position) const

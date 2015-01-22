@@ -17,39 +17,30 @@ namespace pac
 
 	private:
 
-		//
-		Map map;
+		Map *map;
 
-		//
-		Player player;
+		Player *player;
 
-		//
-		Blinky blinky;
+		Blinky *blinky;
 
-		//
-		Pinky pinky;
+		Pinky *pinky;
 
-		//
-		Inky inky;
+		Inky *inky;
 
-		//
-		Clyde clyde;
-
-		//
-		ClockTime frame;
+		Clyde *clyde;
 
 	public:
 
-		//
+		//Default constructor
 		Game();
 
-		//
+		//All functions in the event loop
 		void functionsInEventLoop(const sf::Event & sf_event, sf::RenderWindow & window);
 
-		//
+		//All functions in the game loop (outside the event loop)
 		void functionsInGameLoop(sf::RenderWindow & window, const float & time_per_frame);
 
-		//
+		//All the displays
 		void display(sf::RenderWindow & window);
 
 		//Destructor

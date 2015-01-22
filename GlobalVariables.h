@@ -246,22 +246,22 @@ namespace pac
 	//The amount of time the ghosts stay in frightened mode
 	const sf::Time FRIGHTENED_TIME = sf::seconds(5.f);
 
-	//
-	const int MAX_FRAMES_PER_SECOND = 1000;
+	//Maximum frames per second allowed
+	const int MAX_FRAMES_PER_SECOND = 240;
 
-	//
+	//Lowest time per frame allowed
 	const float LOWEST_TIME_PER_FRAME = 1.f / MAX_FRAMES_PER_SECOND;
 
-	//
+	//Player's movement speed (pixels per second)
 	const float PLAYER_MOVE_SPEED = 140.f;
 
-	//
+	//Enemy's normal movement speed
 	const float ENEMY_MOVE_SPEED = 115.f;
 
-	//
+	//Enemy's movement speed in frightened mode
 	const float ENEMY_FRIGHTENED_MOVE_SPEED = 80.f;
 
-	//
+	//Number of safety frames which depends on the enemies' lowest movement speed to prevent the enemies from glitching
 	const int NUMBER_OF_SAFETY_FRAMES = ((int)(0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) < 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) ? 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME) + 1 : 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME);
 
 }

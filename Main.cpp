@@ -25,7 +25,7 @@ int main()
 			FPS_counter++;
 			if (FPS.clock.getElapsedTime() >= FPS.time)
 			{
-				//printf( "%u \n", FPS_counter);
+				printf( "%u \n", FPS_counter);
 				FPS_counter = 0;
 				FPS.clock.restart();
 			}
