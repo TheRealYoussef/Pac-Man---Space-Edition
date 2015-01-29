@@ -1,4 +1,3 @@
-#include "Player.h"
 #include "Enemy.h"
 
 #ifndef Blinky_h
@@ -6,6 +5,8 @@
 
 namespace pac
 {
+	class Player;
+
 	class Blinky : public Enemy
 	{
 
@@ -14,8 +15,8 @@ namespace pac
 		//Default constructor
 		Blinky();
 
-		//Target the player's position
-		void targetPlayer(const Player & player);
+		//Target the player's position if chasing
+		void targetPosition(const Player & player);
 
 	};
 }

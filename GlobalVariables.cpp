@@ -26,11 +26,16 @@ pac::Position& pac::Position::operator=(const sf::Vector2f & position)
 	return *this;
 }
 
-pac::Position pac::Position::operator+(const pac::Position & position)
+const pac::Position pac::Position::operator+(const pac::Position & position) const
 { 
 	float x1 = x + position.x; 
 	float y1 = y + position.y;
 	return pac::Position(x1, y1);
+}
+
+bool pac::Position::operator!=(const Position & position) const
+{
+	return ((this->x != position.x) || (this->y != position.y));
 }
 
 pac::Size::Size()

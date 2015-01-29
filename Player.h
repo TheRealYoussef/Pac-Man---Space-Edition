@@ -3,6 +3,10 @@
 #include "Map.h"
 #include "Point.h"
 #include "Character.h"
+#include "Blinky.h"
+#include "Pinky.h"
+#include "Inky.h"
+#include "Clyde.h"
 
 #include "GlobalVariables.h"
 
@@ -28,6 +32,9 @@ namespace pac
 		//Set the player's direction
 		void setDirection(const Direction & direction, Map & map);
 
+		//Frighten the ghosts
+		void frightenGhosts(Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
+
 	public:
 
 		//Default constructor
@@ -40,7 +47,7 @@ namespace pac
 		void executeStoredDirection(Map & map);
 
 		//Player eats the points on the map
-		void eatPoints(Map & map);
+		void eatPoints(Map & map, Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
 
 		//Destructor
 		~Player();

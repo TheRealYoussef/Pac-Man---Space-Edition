@@ -1,4 +1,3 @@
-#include "Player.h"
 #include "Enemy.h"
 #include "GlobalVariables.h"
 
@@ -7,6 +6,8 @@
 
 namespace pac
 {
+	class Player;
+
 	class Clyde : public Enemy
 	{
 
@@ -20,9 +21,9 @@ namespace pac
 		//Default constructor
 		Clyde();
 
-		//If the distance from the player is bigger than the equivilant of 8 tiles, then Clyde targets the player's position
+		//If chasing, and the distance from the player is bigger than the equivilant of 8 tiles, then Clyde targets the player's position
 		//Otherwise, he targets the scatter position
-		void targetPlayerOrScatterTile(const Player & player, const Map & map);
+		void targetPosition(const Player & player, const Map & map);
 
 	};
 }

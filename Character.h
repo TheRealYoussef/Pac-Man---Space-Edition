@@ -45,6 +45,18 @@ namespace pac
 		//Check a single tile box for collision
 		bool checkForCollision(const Direction & direction, const Position & tile_box_position);
 
+		//Check for collision to the right
+		bool checkForCollisionRight();
+
+		//Check for collision to the left
+		bool checkForCollisionLeft();
+
+		//Check for collision up
+		bool checkForCollisionUp();
+
+		//Check for collision down
+		bool checkForCollisionDown();
+
 		//Set the character's sides
 		void setCharacterSides();
 
@@ -52,6 +64,12 @@ namespace pac
 		void setTileBoxSides(const Position & tile_box_position);
 
 	protected:
+
+		//Type of character
+		CharacterType character_type;
+
+		//The player's spawn position
+		Position spawn;
 
 		//The character's current direction
 		Direction direction;
@@ -107,10 +125,6 @@ namespace pac
 
 		//Get the character's current position
 		Position getPosition() const;
-
-		//Doesn't check for collision the next frame
-		//You have to be sure, however, that there wont be any collision the next frame when using this function
-		void dontCheckCollision();
 
 		//Display the character
 		void display(sf::RenderWindow & window) const;

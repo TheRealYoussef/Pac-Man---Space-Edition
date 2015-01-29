@@ -1,4 +1,3 @@
-#include "Player.h"
 #include "Enemy.h"
 
 #ifndef Pinky_h
@@ -6,6 +5,8 @@
 
 namespace pac
 {
+	class Player;
+
 	class Pinky : public Enemy
 	{
 
@@ -14,8 +15,8 @@ namespace pac
 		//Default constructor
 		Pinky();
 
-		//Target 4 tiles infront of the player
-		void targetInfrontOfPlayer(const Player & player);
+		//Target 4 tiles infront of the player if chasing
+		void targetPosition(const Player & player);
 
 	};
 }

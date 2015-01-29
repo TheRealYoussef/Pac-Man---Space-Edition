@@ -49,6 +49,12 @@ namespace pac
 		//Points in the map
 		std::vector < std::vector <Point> > points;
 
+		//The total number of points (not eaten) in the map
+		int number_of_points;
+
+		//The number of points eaten
+		int number_of_eaten_points;
+
 		//Number of point file paths
 		int number_of_point_files;
 
@@ -63,6 +69,9 @@ namespace pac
 
 		//The player's starting position in the map
 		Position player_starting_position;
+
+		//Top-left tile of the ghost house
+		Coordinate ghost_house;
 
 		//The ghosts' starting positions in the map
 		Position ghosts_starting_positions[4];
@@ -128,10 +137,34 @@ namespace pac
 		bool getPoint(const Coordinate & coordinate, const Direction & direction, Point *&surrounding_points);
 
 		//Get the player's starting position in the map
-		Position getPlayerStartingPosition();
+		Position getPlayerStartingPosition() const;
+
+		//Get the Blinky's starting position in the map
+		Position getBlinkyStartingPosition() const;
+
+		//Get the Pinky's starting position in the map
+		Position getPinkyStartingPosition() const;
+
+		//Get the Inky's starting position in the map
+		Position getInkyStartingPosition() const;
+
+		//Get the Clyde's starting position in the map
+		Position getClydeStartingPosition() const;
+
+		//Get the ghost house center position
+		Position getGhostHouseCenterPosition() const;
+
+		//Get the position of the tile above the door of the ghost house
+		Position getOutsideGhostHousePosition() const;
 
 		//Get the type of the tile of the specified coordinate
 		TileType getTileType(const Coordinate & coordinate) const;
+
+		//Lower the number of points by 1 if a point is eaten
+		void decrementPoints();
+
+		//Return the number of eaten points
+		int getEatenPoints() const;
 
 		//Destructor
 		~Map();

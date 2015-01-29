@@ -51,6 +51,9 @@ namespace pac
 		//Eat the point
 		void eat();
 
+		//Return the type of the point
+		PointType getPointType() const;
+
 		//Display the point
 		void display(sf::RenderWindow & window) const;
 

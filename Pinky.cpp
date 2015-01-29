@@ -4,10 +4,16 @@
 
 pac::Pinky::Pinky()
 {
-	direction = LEFT;
+	direction = pac::DOWN;
+	for (int i = 0; i < pac::NUMBER_OF_SAFETY_FRAMES; i++)
+	{
+		previous_directions[i] = direction;
+	}
+	mode = pac::HOUSE;
+	get_out_of_ghost_house_points = pac::PINKY_GET_OUT_OF_GHOST_HOUSE_POINTS;
 }
 
-void pac::Pinky::targetInfrontOfPlayer(const pac::Player & player)
+void pac::Pinky::targetPosition(const pac::Player & player)
 {
 	if (mode == pac::CHASE)
 	{

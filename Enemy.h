@@ -2,7 +2,6 @@
 
 #include "Character.h"
 #include "Map.h"
-#include "Player.h"
 #include "GlobalVariables.h"
 
 #ifndef Enemy_h
@@ -19,9 +18,6 @@ namespace pac
 
 		//The distances between the centers 4 tiles around the enemy and the target position
 		std::vector <float> distances;
-
-		//The pac::NUMBER_OF_SAFETY_FRAMES previous directions of the enemy
-		std::vector <Direction> previous_directions;
 
 		//Did the enemy change its direction?
 		bool same_direction;
@@ -42,6 +38,9 @@ namespace pac
 		//Otherwise, store -1
 		void calculateDistance(const Coordinate & coordinate, const Direction & direction, Map & map);
 
+		//Update the previous directions
+		void updatePreviousDirections(const Direction & direction);
+
 		//Compare distances between surrounding tiles and target position with that of the tile in the enemy's current direction
 		void compareWithCurrentDirection(const bool & same_direction);
 
@@ -57,7 +56,25 @@ namespace pac
 		//Return true if the direction passed to the function is the opposite of any of the previous directions, false otherwise
 		bool checkPreviousDirectionsOpposites(const Direction & direction);
 
+		//Control when the chasing will end
+		void chase();
+
+		//Control when the scattering will end
+		void scatter();
+
+		//Choose a random target position and control when the frightened mode ends
+		void run(const Map & map);
+
+		//Control the movement in the ghost house
+		void house(Map & map);
+
+		//Leave the ghost house
+		void leaveHouse(const Map & map);
+
 	protected:
+
+		//The pac::NUMBER_OF_SAFETY_FRAMES previous directions of the enemy
+		std::vector <Direction> previous_directions;
 
 		//The enemy's target position
 		Position target_position;
@@ -68,6 +85,9 @@ namespace pac
 		//The enemy's current state (scatter, chase, or frightened)
 		GhostMode mode;
 
+		//The number of points the player has to eat for the enemy to get out of the ghost house
+		int get_out_of_ghost_house_points;
+
 	public:
 
 		//Default constructor
@@ -77,10 +97,13 @@ namespace pac
 		void setScatterPosition(const Map & map, const Coordinate & coordinate);
 
 		//Control the enemy's current mode/state
-		void changeMode();
+		void changeMode(pac::Map & map);
 
 		//Choose the next direction to take
 		void chooseBestDirection(Map & map);
+
+		//Frighten the enemy
+		void frighten();
 
 	};
 }

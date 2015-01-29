@@ -6,10 +6,16 @@
 
 pac::Blinky::Blinky()
 {
-	direction = LEFT;
+	direction = pac::LEFT;
+	for (int i = 0; i < pac::NUMBER_OF_SAFETY_FRAMES; i++)
+	{
+		previous_directions[i] = direction;
+	}
+	mode = pac::FRIGHTENED;
+	get_out_of_ghost_house_points = -1;
 }
 
-void pac::Blinky::targetPlayer(const pac::Player & player)
+void pac::Blinky::targetPosition(const pac::Player & player)
 {
 	if (mode == pac::CHASE)
 	{

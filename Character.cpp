@@ -20,6 +20,15 @@ pac::Character::Character()
 
 void pac::Character::init(const pac::Position & spawn_position, const std::string & file_path, pac::Map & map)
 {
+	switch (character_type)
+	{
+	case pac::PLAYER: 
+		spawn = spawn_position;
+		break;
+	case pac::ENEMY:
+		spawn = map.getGhostHouseCenterPosition();
+		break;
+	}
 	map.getTeleportationPairs(teleportation_pairs);
 	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
 	{
@@ -130,45 +139,64 @@ bool pac::Character::checkForCollision(const pac::Direction & direction, const p
 	switch (direction)
 	{
 	case RIGHT:
-		if (character_right >= tile_box_left && character_left < tile_box_right && character_up < tile_box_down && character_down > tile_box_up)
-		{
-			if (character_right != tile_box_left)
-			{
-				setPosition(pac::Position(tile_box_left - CHARACTER_SIZE.width, getPosition().y));
-			}
-			return true;
-		}
-		break;
+		return checkForCollisionRight();
 	case LEFT:
-		if (character_left <= tile_box_right && character_right > tile_box_left && character_up < tile_box_down && character_down > tile_box_up)
-		{
-			if (character_left != tile_box_right)
-			{
-				setPosition(pac::Position(tile_box_right, getPosition().y));
-			}
-			return true;
-		}
-		break;
+		return checkForCollisionLeft();
 	case UP:
-		if (character_up <= tile_box_down && character_down > tile_box_up && character_left < tile_box_right && character_right > tile_box_left)
-		{
-			if (character_up != tile_box_down)
-			{
-				setPosition(pac::Position(getPosition().x, tile_box_down));
-			}
-			return true;
-		}
-		break;
+		return checkForCollisionUp();
 	case DOWN:
-		if (character_down >= tile_box_up && character_up < tile_box_down && character_left < tile_box_right && character_right > tile_box_left)
+		return checkForCollisionDown();
+	}
+}
+
+bool pac::Character::checkForCollisionRight()
+{
+	if (character_right >= tile_box_left && character_left < tile_box_right && character_up < tile_box_down && character_down > tile_box_up)
+	{
+		if (character_right != tile_box_left)
 		{
-			if (character_down != tile_box_up)
-			{
-				setPosition(pac::Position(getPosition().x, tile_box_up - CHARACTER_SIZE.height));
-			}
-			return true;
+			setPosition(pac::Position(tile_box_left - CHARACTER_SIZE.width, getPosition().y));
 		}
-		break;
+		return true;
+	}
+	return false;
+}
+
+bool pac::Character::checkForCollisionLeft()
+{
+	if (character_left <= tile_box_right && character_right > tile_box_left && character_up < tile_box_down && character_down > tile_box_up)
+	{
+		if (character_left != tile_box_right)
+		{
+			setPosition(pac::Position(tile_box_right, getPosition().y));
+		}
+		return true;
+	}
+	return false;
+}
+
+bool pac::Character::checkForCollisionUp()
+{
+	if (character_up <= tile_box_down && character_down > tile_box_up && character_left < tile_box_right && character_right > tile_box_left)
+	{
+		if (character_up != tile_box_down)
+		{
+			setPosition(pac::Position(getPosition().x, tile_box_down));
+		}
+		return true;
+	}
+	return false;
+}
+
+bool pac::Character::checkForCollisionDown()
+{
+	if (character_down >= tile_box_up && character_up < tile_box_down && character_left < tile_box_right && character_right > tile_box_left)
+	{
+		if (character_down != tile_box_up)
+		{
+			setPosition(pac::Position(getPosition().x, tile_box_up - CHARACTER_SIZE.height));
+		}
+		return true;
 	}
 	return false;
 }
@@ -218,15 +246,9 @@ void pac::Character::setPosition(const pac::Position & position)
 	}
 }
 
-
 pac::Position pac::Character::getPosition() const
 {
-	return pac::Position( images[0].sprite.getPosition().x, images[0].sprite.getPosition().y );
-}
-
-void pac::Character::dontCheckCollision()
-{
-	move_without_checking = true;
+	return pac::Position(images[0].sprite.getPosition().x, images[0].sprite.getPosition().y);
 }
 
 void pac::Character::display(sf::RenderWindow & window) const

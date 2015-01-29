@@ -5,10 +5,16 @@
 
 pac::Inky::Inky()
 {
-	direction = LEFT;
+	direction = pac::UP;
+	for (int i = 0; i < pac::NUMBER_OF_SAFETY_FRAMES; i++)
+	{
+		previous_directions[i] = direction;
+	}
+	mode = pac::HOUSE;
+	get_out_of_ghost_house_points = pac::INKY_GET_OUT_OF_GHOST_HOUSE_POINTS;
 }
 
-void pac::Inky::targetDoubleBlinkyPlayerDistance(const pac::Player & player, const pac::Blinky & blinky)
+void pac::Inky::targetPosition(const pac::Player & player, const pac::Blinky & blinky)
 {
 	if (mode == pac::CHASE)
 	{

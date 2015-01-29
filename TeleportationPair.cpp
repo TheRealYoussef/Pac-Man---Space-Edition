@@ -64,22 +64,18 @@ void pac::TeleportationPair::switchLeave(pac::Character & character, const pac::
 	case pac::RIGHT:
 		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
 		character.setDirection(opposite(direction));
-		character.dontCheckCollision();
 		break;
 	case pac::LEFT:
 		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
 		character.setDirection(opposite(direction));
-		character.dontCheckCollision();
 		break;
 	case pac::UP:
 		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
 		character.setDirection(opposite(direction));
-		character.dontCheckCollision();
 		break;
 	case pac::DOWN:
 		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
 		character.setDirection(opposite(direction));
-		character.dontCheckCollision();
 		break;
 	}
 }

@@ -40,6 +40,11 @@ void pac::Point::eat()
 	eaten = pac::EATEN;
 }
 
+pac::PointType pac::Point::getPointType() const
+{
+	return type;
+}
+
 void pac::Point::display(sf::RenderWindow & window) const
 {
 	if (eaten == pac::NOT_EATEN && type != pac::NO_POINT)

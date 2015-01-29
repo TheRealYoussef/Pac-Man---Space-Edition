@@ -1,4 +1,3 @@
-#include "Player.h"
 #include "Blinky.h"
 #include "Enemy.h"
 #include "GlobalVariables.h"
@@ -8,6 +7,8 @@
 
 namespace pac
 {
+	class Player;
+
 	class Inky : public Enemy
 	{
 
@@ -24,8 +25,8 @@ namespace pac
 		//Default constructor
 		Inky();
 
-		//Target double tile_and_blinky_distance position
-		void targetDoubleBlinkyPlayerDistance(const Player & player, const Blinky & blinky);
+		//Target double tile_and_blinky_distance position if chasing
+		void targetPosition(const Player & player, const Blinky & blinky);
 
 	};
 }

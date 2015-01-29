@@ -15,7 +15,8 @@ namespace pac
 		float y;
 		Position& operator=(const Position & position);
 		Position& operator=(const sf::Vector2f & position);
-		Position operator+(const Position & position);
+		const Position operator+(const Position & position) const;
+		bool operator!=(const Position & position) const;
 	};
 
 	//Object's width and height in pixels
@@ -235,16 +236,17 @@ namespace pac
 	//CHASE: follows the player using its unique targeting system
 	//SCATTER: targets its own corner of the map
 	//FRIGHTENED: moves in a random direction
-	enum GhostMode {CHASE, SCATTER, FRIGHTENED};
+	//HOUSE: moves up and down until given a command to leave the ghost house
+	enum GhostMode {CHASE, SCATTER, FRIGHTENED, HOUSE, LEAVE_HOUSE};
 
 	//The amount of time the ghosts stay in scatter mode
-	const sf::Time SCATTER_TIME = sf::seconds(5.f);
+	const sf::Time SCATTER_TIME = sf::seconds(3.f);
 
 	//The amount of time the ghosts stay in chase mode
-	const sf::Time CHASE_TIME = sf::seconds(20.f);
+	const sf::Time CHASE_TIME = sf::seconds(15.f);
 
 	//The amount of time the ghosts stay in frightened mode
-	const sf::Time FRIGHTENED_TIME = sf::seconds(5.f);
+	const sf::Time FRIGHTENED_TIME = sf::seconds(7.f);
 
 	//Maximum frames per second allowed
 	const int MAX_FRAMES_PER_SECOND = 240;
@@ -253,16 +255,30 @@ namespace pac
 	const float LOWEST_TIME_PER_FRAME = 1.f / MAX_FRAMES_PER_SECOND;
 
 	//Player's movement speed (pixels per second)
-	const float PLAYER_MOVE_SPEED = 140.f;
+	const float PLAYER_MOVE_SPEED = 100.f;
 
 	//Enemy's normal movement speed
-	const float ENEMY_MOVE_SPEED = 115.f;
+	const float ENEMY_MOVE_SPEED = 100.f;
 
 	//Enemy's movement speed in frightened mode
-	const float ENEMY_FRIGHTENED_MOVE_SPEED = 80.f;
+	const float ENEMY_FRIGHTENED_MOVE_SPEED = 60.f;
 
 	//Number of safety frames which depends on the enemies' lowest movement speed to prevent the enemies from glitching
 	const int NUMBER_OF_SAFETY_FRAMES = ((int)(0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) < 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) ? 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME) + 1 : 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME);
+
+	//Type of character
+	//PLAYER: player (value 0)
+	//ENEMY: enemy (value 1)
+	enum CharacterType{ PLAYER, ENEMY };
+
+	//The number of points the player has to eat for Pinky to get out of the ghost house
+	const int PINKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 1;
+
+	//The number of points the player has to eat for Inky to get out of the ghost house
+	const int INKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 20;
+
+	//The number of points the player has to eat for Clyde to get out of the ghost house
+	const int CLYDE_GET_OUT_OF_GHOST_HOUSE_POINTS = 50;
 
 }
 

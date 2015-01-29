@@ -1,6 +1,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "Enemy.h"
 #include "Map.h"
 #include "GlobalVariables.h"
@@ -8,8 +9,8 @@
 
 pac::Enemy::Enemy()
 {
+	character_type = pac::ENEMY;
 	animation.time = pac::GHOST_ANIMATION_TIME;
-	mode = pac::SCATTER;
 	forced_switch = false;
 	previous_directions.resize(pac::NUMBER_OF_SAFETY_FRAMES);
 	for (int i = 0; i < pac::NUMBER_OF_SAFETY_FRAMES; i++)
@@ -27,28 +28,25 @@ void pac::Enemy::setScatterPosition(const pac::Map & map, const pac::Coordinate 
 
 void pac::Enemy::chooseBestDirection(pac::Map & map)
 {
-	distances.resize(0);
-
-	center_coordinate = map.getCoordinate(pac::Position( getPosition().x + pac::CHARACTER_SIZE.width / 2.f, getPosition().y + pac::CHARACTER_SIZE.height / 2.f ));
-
-	calculateDistance(pac::Coordinate(center_coordinate.x + 1, center_coordinate.y), pac::RIGHT, map);
-	calculateDistance(pac::Coordinate(center_coordinate.x - 1, center_coordinate.y), pac::LEFT, map);
-	calculateDistance(pac::Coordinate(center_coordinate.x, center_coordinate.y - 1), pac::UP, map);
-	calculateDistance(pac::Coordinate(center_coordinate.x, center_coordinate.y + 1), pac::DOWN, map);
-
-	same_direction = true;
-
-	for (int i = 0; i < NUMBER_OF_SAFETY_FRAMES - 1; i++)
+	if (mode != pac::HOUSE && mode != pac::LEAVE_HOUSE)
 	{
-		previous_directions[i] = previous_directions[i + 1];
+		distances.resize(0);
+
+		center_coordinate = map.getCoordinate(pac::Position(getPosition().x + pac::CHARACTER_SIZE.width / 2.f, getPosition().y + pac::CHARACTER_SIZE.height / 2.f));
+
+		calculateDistance(pac::Coordinate(center_coordinate.x + 1, center_coordinate.y), pac::RIGHT, map);
+		calculateDistance(pac::Coordinate(center_coordinate.x - 1, center_coordinate.y), pac::LEFT, map);
+		calculateDistance(pac::Coordinate(center_coordinate.x, center_coordinate.y - 1), pac::UP, map);
+		calculateDistance(pac::Coordinate(center_coordinate.x, center_coordinate.y + 1), pac::DOWN, map);
+
+		same_direction = true;
+
+		updatePreviousDirections(direction);
+
+		compareWithCurrentDirection(false);
+
+		compareWithAnotherDirection(map);
 	}
-
-	previous_directions[NUMBER_OF_SAFETY_FRAMES - 1] = direction;
-
-	compareWithCurrentDirection(false);
-
-	compareWithAnotherDirection(map);
-
 }
 
 void pac::Enemy::calculateDistance(const pac::Coordinate & coordinate, const pac::Direction & direction, pac::Map & map)
@@ -108,43 +106,114 @@ void pac::Enemy::getOtherDirection()
 	}
 }
 
-void pac::Enemy::changeMode()
+void pac::Enemy::changeMode(pac::Map & map)
 {
+	if (map.getEatenPoints() == get_out_of_ghost_house_points)
+	{
+		mode = pac::LEAVE_HOUSE;
+	}
 	switch (mode)
 	{
 	case pac::CHASE:
-		if (chase_clock.getElapsedTime() >= pac::CHASE_TIME)
-		{
-			mode = pac::SCATTER;
-			forced_switch = false;
-			scatter_clock.restart();
-		}
+		chase();
 		break;
 	case pac::SCATTER:
-		if (!forced_switch)
-		{
-			for (int i = 0; i < NUMBER_OF_SAFETY_FRAMES - 1; i++)
-			{
-				previous_directions[i] = previous_directions[i + 1];
-			}
-			previous_directions[NUMBER_OF_SAFETY_FRAMES - 1] = direction;
-			direction = opposite(direction);
-			forced_switch = true;
-		}
-		target_position = scatter_position;
-		if (scatter_clock.getElapsedTime() >= pac::SCATTER_TIME)
-		{
-			mode = pac::CHASE;
-			chase_clock.restart();
-		}
+		scatter();
 		break;
 	case pac::FRIGHTENED:
-		if (frightened_clock.getElapsedTime() >= pac::FRIGHTENED_TIME)
-		{
-			mode = pac::CHASE;
-			chase_clock.restart();
-		}
+		run(map);
 		break;
+	case pac::HOUSE:
+		house(map);
+		break;
+	case pac::LEAVE_HOUSE:
+		leaveHouse(map);
+		break;
+	}
+}
+
+void pac::Enemy::chase()
+{
+	if (chase_clock.getElapsedTime() >= pac::CHASE_TIME)
+	{
+		mode = pac::SCATTER;
+		forced_switch = true;
+		scatter_clock.restart();
+	}
+}
+
+void pac::Enemy::scatter()
+{
+	if (forced_switch)
+	{
+		updatePreviousDirections(direction);
+		direction = opposite(direction);
+		forced_switch = false;
+	}
+	target_position = scatter_position;
+	if (scatter_clock.getElapsedTime() >= pac::SCATTER_TIME)
+	{
+		mode = pac::CHASE;
+		chase_clock.restart();
+	}
+}
+
+void pac::Enemy::updatePreviousDirections(const pac::Direction & direction)
+{
+	for (int i = 0; i < NUMBER_OF_SAFETY_FRAMES - 1; i++)
+	{
+		previous_directions[i] = previous_directions[i + 1];
+	}
+	previous_directions[NUMBER_OF_SAFETY_FRAMES - 1] = direction;
+}
+
+void pac::Enemy::run(const pac::Map & map)
+{
+	target_position = pac::Position(rand() % map.getMapSize().col * TILE_SIZE.width, rand() % map.getMapSize().row * TILE_SIZE.height);
+	if (frightened_clock.getElapsedTime() >= pac::FRIGHTENED_TIME)
+	{
+		mode = pac::CHASE;
+		move_speed = pac::ENEMY_MOVE_SPEED;
+		chase_clock.restart();
+	}
+}
+
+void pac::Enemy::house(pac::Map & map)
+{
+	if (isColliding(pac::UP, map))
+	{
+		direction = pac::DOWN;
+	}
+	else if (isColliding(pac::DOWN, map))
+	{
+		direction = pac::UP;
+	}
+}
+
+void pac::Enemy::leaveHouse(const pac::Map & map)
+{
+	if (round(map.getGhostHouseCenterPosition().x - getPosition().x) == 0)
+	{
+		setPosition(pac::Position(map.getGhostHouseCenterPosition().x, getPosition().y));
+		if (round(getPosition().y) != map.getOutsideGhostHousePosition().y)
+		{
+			direction = pac::UP;
+			move_without_checking = true;
+		}
+		else
+		{
+			setPosition(map.getOutsideGhostHousePosition());
+			mode = pac::SCATTER;
+			scatter_clock.restart();
+		}
+	}
+	else if (map.getGhostHouseCenterPosition().x - getPosition().x > 0)
+	{
+		direction = pac::RIGHT;
+	}
+	else if (map.getGhostHouseCenterPosition().x - getPosition().x < 0)
+	{
+		direction = pac::LEFT;
 	}
 }
 
@@ -170,4 +239,12 @@ bool pac::Enemy::checkPreviousDirectionsOpposites(const pac::Direction & directi
 		}
 	}
 	return true;
+}
+
+void pac::Enemy::frighten()
+{
+	mode = pac::FRIGHTENED;
+	move_speed = pac::ENEMY_FRIGHTENED_MOVE_SPEED;
+	direction = opposite(direction);
+	frightened_clock.restart();
 }

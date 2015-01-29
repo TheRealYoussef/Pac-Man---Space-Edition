@@ -30,6 +30,7 @@ void pac::Map::init(const pac::Position & position, const std::string & map_file
 		readPointFilesAndTypes(input);
 		readAndCreatePoints(input);
 		input >> player_starting_position.x >> player_starting_position.y;
+		input >> ghost_house.x >> ghost_house.y;
 		input.close();
 	}
 	else
@@ -200,6 +201,8 @@ void pac::Map::readAndCreatePoints(std::ifstream & input)
 	int num;
 	char trash;
 	points.resize(size.row);
+	number_of_points = 0;
+	number_of_eaten_points = 0;
 	for (int i = 0; i < size.row; i++)
 	{
 		points[i].resize(size.col);
@@ -213,6 +216,7 @@ void pac::Map::readAndCreatePoints(std::ifstream & input)
 			if (num != 0)
 			{
 				points[i][j].init(Position( position.x + pac::TILE_SIZE.width * j, position.y + pac::TILE_SIZE.height * i ), point_types[num - number_of_files - 1], point_values[num - number_of_files - 1], point_textures[num - number_of_files - 1]);
+				number_of_points++;
 			}
 		}
 	} 
@@ -355,14 +359,55 @@ bool pac::Map::getPoint(const Coordinate & coordinate, pac::Point *&surrounding_
 	return false;
 }
 
-pac::Position pac::Map::getPlayerStartingPosition()
+pac::Position pac::Map::getPlayerStartingPosition() const
 {
 	return player_starting_position + position;
+}
+
+pac::Position pac::Map::getBlinkyStartingPosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 3.f), pac::TILE_SIZE.height * (ghost_house.y - 1.5f));
+}
+
+pac::Position pac::Map::getPinkyStartingPosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 3.f), pac::TILE_SIZE.height * (ghost_house.y + 1.5f));
+}
+
+pac::Position pac::Map::getInkyStartingPosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 1.f), pac::TILE_SIZE.height * (ghost_house.y + 1.5f));
+}
+
+pac::Position pac::Map::getClydeStartingPosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 5.f), pac::TILE_SIZE.height * (ghost_house.y + 1.5f));
+}
+
+pac::Position pac::Map::getGhostHouseCenterPosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 3.f), pac::TILE_SIZE.height * (ghost_house.y + 1.5f));
+}
+
+pac::Position pac::Map::getOutsideGhostHousePosition() const
+{
+	return position + pac::Position(pac::TILE_SIZE.width * (ghost_house.x + 3.f), pac::TILE_SIZE.height * (ghost_house.y - 1.5f));
 }
 
 pac::TileType pac::Map::getTileType(const pac::Coordinate & coordinate) const
 {
 	return tile_array[coordinate.y][coordinate.x].getTileType();
+}
+
+void pac::Map::decrementPoints()
+{
+	number_of_points--;
+	number_of_eaten_points++;
+}
+
+int pac::Map::getEatenPoints() const
+{
+	return number_of_eaten_points;
 }
 
 pac::Map::~Map()

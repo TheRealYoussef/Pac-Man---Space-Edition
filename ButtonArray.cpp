@@ -164,7 +164,7 @@ void pac::ButtonArray::upKeyPressed(const sf::Event & event)
 {
 	if (event.type == sf::Event::KeyPressed)
 	{
-		if (event.key.code == sf::Keyboard::Up)
+		if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Left)
 		{
 			previously_selected_button_index = selected_button_index;
 			selected_button_index--;
@@ -181,7 +181,7 @@ void pac::ButtonArray::downKeyPressed(const sf::Event & event)
 {
 	if (event.type == sf::Event::KeyPressed)
 	{
-		if (event.key.code == sf::Keyboard::Down)
+		if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::Right)
 		{
 			previously_selected_button_index = selected_button_index;
 			selected_button_index++;

@@ -6,10 +6,16 @@
 
 pac::Clyde::Clyde()
 {
-	direction = LEFT;
+	direction = pac::UP;
+	for (int i = 0; i < pac::NUMBER_OF_SAFETY_FRAMES; i++)
+	{
+		previous_directions[i] = direction;
+	}
+	mode = pac::HOUSE;
+	get_out_of_ghost_house_points = pac::CLYDE_GET_OUT_OF_GHOST_HOUSE_POINTS;
 }
 
-void pac::Clyde::targetPlayerOrScatterTile(const pac::Player & player, const pac::Map & map)
+void pac::Clyde::targetPosition(const pac::Player & player, const pac::Map & map)
 {
 	if (mode == pac::CHASE)
 	{
