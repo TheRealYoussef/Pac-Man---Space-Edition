@@ -49,6 +49,9 @@ namespace pac
 		//Player eats the points on the map
 		void eatPoints(Map & map, Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
 
+		//Display the player
+		void display(sf::RenderWindow & window) const;
+
 		//Destructor
 		~Player();
 

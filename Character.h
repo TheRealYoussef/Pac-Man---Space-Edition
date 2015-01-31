@@ -15,9 +15,6 @@ namespace pac
 
 	private:
 
-		//The images of the differect sprites of the character
-		Image images[NUMBER_OF_SPRITES_PER_CHARACTER];
-
 		//Pointers to the 3 tiles the character is colliding with in the direction he is moving
 		Tile *tiles[DISTINCT_COLLIDING_TILES];
 
@@ -65,10 +62,16 @@ namespace pac
 
 	protected:
 
+		//The images of the differect sprites of the character
+		Image images[NUMBER_OF_SPRITES_PER_CHARACTER];
+
+		//The current state of the character's animation
+		AnimationState animation_state;
+
 		//Type of character
 		CharacterType character_type;
 
-		//The player's spawn position
+		//The character's spawn position
 		Position spawn;
 
 		//The character's current direction
@@ -76,12 +79,6 @@ namespace pac
 
 		//The character's current coordinate in the map
 		Coordinate coordinate;
-	
-		//The character's animation clock and time
-		ClockTime animation;
-
-		//The current state of the character's animation
-		AnimationState animation_state;
 
 		//The character's movement speed (pixels per second)
 		float move_speed;
@@ -108,8 +105,10 @@ namespace pac
 		void init(const Position & spawn_position, const std::string & file_path, Map & map);
 
 		//Move the character (including collision and teleportation)
-		//For teleportation to work, initTele(Map & map) has to be called 
 		void move(Map & map, const float & time_per_frame);
+
+		//Teleport the character
+		void teleport();
 
 		//Alternate between the character's 2 animation states
 		void playAnimation();
@@ -123,11 +122,14 @@ namespace pac
 		//Set the character's position
 		void setPosition(const Position & position);
 
+		//Set the position of the remaining sprites if the character is an enemy
+		virtual void setFrightenedPosition(const Position & position);
+
 		//Get the character's current position
 		Position getPosition() const;
 
-		//Display the character
-		void display(sf::RenderWindow & window) const;
+		//Get the type of the character
+		CharacterType getCharacterType() const;
 
 		//Destructor
 		~Character();

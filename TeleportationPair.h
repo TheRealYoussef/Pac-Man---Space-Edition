@@ -29,6 +29,10 @@ namespace pac
 
 		//Controls exit from a teleporter
 		void switchLeave(Character & character, const Direction & direction, const Position & position) const;
+
+		//Set position
+		void setPosition(Character & character, const Position & position, const Direction & direction) const;
+
 	public:
 
 		//Default constructor

@@ -62,22 +62,28 @@ void pac::TeleportationPair::switchLeave(pac::Character & character, const pac::
 	switch (direction)
 	{
 	case pac::RIGHT:
-		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
-		character.setDirection(opposite(direction));
+		setPosition(character, pac::Position(position.x, position.y - pac::TILE_BOX.height), direction);
 		break;
 	case pac::LEFT:
-		character.setPosition(pac::Position( position.x, position.y - pac::TILE_BOX.height ));
-		character.setDirection(opposite(direction));
+		setPosition(character, pac::Position(position.x, position.y - pac::TILE_BOX.height), direction);
 		break;
 	case pac::UP:
-		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
-		character.setDirection(opposite(direction));
+		setPosition(character, pac::Position(position.x - pac::TILE_BOX.width, position.y), direction);
 		break;
 	case pac::DOWN:
-		character.setPosition(pac::Position( position.x - pac::TILE_BOX.width, position.y ));
-		character.setDirection(opposite(direction));
+		setPosition(character, pac::Position(position.x - pac::TILE_BOX.width, position.y), direction);
 		break;
 	}
+}
+
+void pac::TeleportationPair::setPosition(pac::Character & character, const pac::Position & position, const pac::Direction & direction) const
+{
+	character.setPosition(position);
+	if (character.getCharacterType() == pac::ENEMY)
+	{
+		character.setFrightenedPosition(position);
+	}
+	character.setDirection(opposite(direction));
 }
 
 void pac::TeleportationPair::getTeleporterPositions(pac::Position position_pair[pac::PAIR]) const

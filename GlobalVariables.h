@@ -159,7 +159,7 @@ namespace pac
 		float x;
 		float y;
 		Velocity& operator=(const Velocity & velocity);
-		Velocity& operator=(const int & value);
+		Velocity& operator=(const float & value);
 		bool operator!=(const int & value);
 	};
 
@@ -218,7 +218,7 @@ namespace pac
 	const sf::Time PLAYER_ANIMATION_TIME = sf::seconds(0.1f);
 
 	//The time between each switch of the ghost's animation states
-	const sf::Time GHOST_ANIMATION_TIME = sf::seconds(0.2f);
+	const sf::Time GHOST_ANIMATION_TIME = sf::seconds(0.34f);
 
 	//Right, Left, Up, Down
 	const int NUMBER_OF_POSSIBLE_DIRECTIONS = 4;
@@ -237,7 +237,10 @@ namespace pac
 	//SCATTER: targets its own corner of the map
 	//FRIGHTENED: moves in a random direction
 	//HOUSE: moves up and down until given a command to leave the ghost house
-	enum GhostMode {CHASE, SCATTER, FRIGHTENED, HOUSE, LEAVE_HOUSE};
+	//LEAVE_HOUSE: move up and out of the door of the house
+	//RETURN_HOUSE: return to the position above the door of the house
+	//ENTER_HOUSE: move down through the door of the house until the enemy is in the center of the house
+	enum GhostMode {CHASE, SCATTER, FRIGHTENED, HOUSE, LEAVE_HOUSE, RETURN_HOUSE, ENTER_HOUSE};
 
 	//The amount of time the ghosts stay in scatter mode
 	const sf::Time SCATTER_TIME = sf::seconds(3.f);
@@ -258,10 +261,13 @@ namespace pac
 	const float PLAYER_MOVE_SPEED = 100.f;
 
 	//Enemy's normal movement speed
-	const float ENEMY_MOVE_SPEED = 100.f;
+	const float ENEMY_MOVE_SPEED = 80.f;
 
 	//Enemy's movement speed in frightened mode
-	const float ENEMY_FRIGHTENED_MOVE_SPEED = 60.f;
+	const float ENEMY_FRIGHTENED_MOVE_SPEED = 40.f;
+
+	//Enemy's movement speed inside the ghost house
+	const float ENEMY_HOUSE_MOVE_SPEED = 50.f;
 
 	//Number of safety frames which depends on the enemies' lowest movement speed to prevent the enemies from glitching
 	const int NUMBER_OF_SAFETY_FRAMES = ((int)(0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) < 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) ? 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME) + 1 : 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME);
@@ -272,13 +278,22 @@ namespace pac
 	enum CharacterType{ PLAYER, ENEMY };
 
 	//The number of points the player has to eat for Pinky to get out of the ghost house
-	const int PINKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 1;
+	const int PINKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 5;
 
 	//The number of points the player has to eat for Inky to get out of the ghost house
-	const int INKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 20;
+	const int INKY_GET_OUT_OF_GHOST_HOUSE_POINTS = 10;
 
 	//The number of points the player has to eat for Clyde to get out of the ghost house
-	const int CLYDE_GET_OUT_OF_GHOST_HOUSE_POINTS = 50;
+	const int CLYDE_GET_OUT_OF_GHOST_HOUSE_POINTS = 20;
+
+	//The time that should pass in order for the enemy to start blinking (in frightened mode)
+	const sf::Time TIME_FOR_ENEMY_TO_START_BLINKING = sf::seconds(4.f);
+
+	//The time between each state in the enemy frightened mode
+	const sf::Time FRIGHTENED_ANIMATION_TIME = sf::seconds(0.2f);
+
+	//The position of the map in the SFML window
+	const Position MAP_POSITION(144.f, 52.f);
 
 }
 

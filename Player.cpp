@@ -14,7 +14,6 @@ pac::Player::Player()
 	character_type = pac::PLAYER;
 	next_direction = pac::NONE;
 	direction = pac::RIGHT;
-	this->animation.time = pac::PLAYER_ANIMATION_TIME;
 	move_speed = pac::PLAYER_MOVE_SPEED;
 }
 
@@ -110,6 +109,14 @@ void pac::Player::executeStoredDirection(pac::Map & map)
 			next_direction = pac::NONE;
 			move_without_checking = true;
 		}
+	}
+}
+
+void pac::Player::display(sf::RenderWindow & window) const
+{
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	{
+		window.draw(images[(int)direction * 2 + (int)animation_state].sprite);
 	}
 }
 

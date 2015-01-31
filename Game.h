@@ -29,6 +29,36 @@ namespace pac
 
 		Clyde *clyde;
 
+		sf::Clock ghost_animation_clock;
+
+		sf::Clock player_animation_clock;
+
+		sf::Clock frightened_animation_clock;
+
+		void loadMap();
+
+		void loadPlayer();
+
+		void loadBlinky();
+
+		void loadPinky();
+
+		void loadInky();
+
+		void loadClyde();
+
+		void restartClocks();
+
+		void playerFunctions(const float & time_per_frame);
+
+		void enemiesAnimations();
+
+		void enemiesFrightenedAnimations();
+
+		void enemyFunctions(Enemy *enemy, const float & time_per_frame);
+
+		void inkyFunctions(const float & time_per_frame);
+
 	public:
 
 		//Default constructor

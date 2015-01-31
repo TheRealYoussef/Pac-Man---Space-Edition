@@ -15,20 +15,11 @@ pac::Character::Character()
 {
 	move_without_checking = false;
 	animation_state = pac::STATE_1;
-	animation.clock.restart();
 }
 
 void pac::Character::init(const pac::Position & spawn_position, const std::string & file_path, pac::Map & map)
 {
-	switch (character_type)
-	{
-	case pac::PLAYER: 
-		spawn = spawn_position;
-		break;
-	case pac::ENEMY:
-		spawn = map.getGhostHouseCenterPosition();
-		break;
-	}
+	spawn = spawn_position;
 	map.getTeleportationPairs(teleportation_pairs);
 	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
 	{
@@ -52,7 +43,11 @@ void pac::Character::move(pac::Map & map, const float & time_per_frame)
 	{
 		images[i].sprite.move(velocity.x, velocity.y);
 	}
-	for (int i = 0; i < teleportation_pairs.size(); i++)
+}
+
+void pac::Character::teleport()
+{
+	for (unsigned int i = 0; i < teleportation_pairs.size(); i++)
 	{
 		teleportation_pairs[i]->teleport(*this);
 	}
@@ -219,11 +214,7 @@ void pac::Character::setTileBoxSides(const pac::Position & tile_box_position)
 
 void pac::Character::playAnimation()
 {
-	if (animation.clock.getElapsedTime() >= animation.time)
-	{
-		animation_state = (animation_state == pac::STATE_1) ? pac::STATE_2 : pac::STATE_1;
-		animation.clock.restart();
-	}
+	animation_state = (animation_state == pac::STATE_1) ? pac::STATE_2 : pac::STATE_1;
 }
 
 void pac::Character::setDirection(const pac::Direction & direction)
@@ -243,7 +234,15 @@ void pac::Character::setPosition(const pac::Position & position)
 	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
 	{
 		images[i].sprite.setPosition(position.x, position.y);
+		if (character_type == pac::ENEMY)
+		{
+			setFrightenedPosition(position);
+		}
 	}
+}
+
+void pac::Character::setFrightenedPosition(const pac::Position & position)
+{
 }
 
 pac::Position pac::Character::getPosition() const
@@ -251,12 +250,9 @@ pac::Position pac::Character::getPosition() const
 	return pac::Position(images[0].sprite.getPosition().x, images[0].sprite.getPosition().y);
 }
 
-void pac::Character::display(sf::RenderWindow & window) const
+pac::CharacterType pac::Character::getCharacterType() const
 {
-	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
-	{
-		window.draw(images[direction * 2 + animation_state].sprite);
-	}
+	return character_type;
 }
 
 pac::Character::~Character()

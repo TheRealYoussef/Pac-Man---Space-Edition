@@ -155,7 +155,7 @@ void pac::Map::readAndCreateTeleportationPairs(std::ifstream & input)
 		teleportation_pairs_info.push_back(temp_info);
 	} while (trash != '$');
 	teleportation_pairs.resize(teleportation_pairs_info.size());
-	for (int i = 0; i < teleportation_pairs_info.size(); i++)
+	for (unsigned int i = 0; i < teleportation_pairs_info.size(); i++)
 	{
 		teleportation_pairs[i].init(pac::Position( position.x + teleportation_pairs_info[i].teleporter_1_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_1_c.y * pac::TILE_SIZE.height ), teleportation_pairs_info[i].teleporter_1_d, pac::Position( position.x + teleportation_pairs_info[i].teleporter_2_c.x * pac::TILE_SIZE.width, position.y + teleportation_pairs_info[i].teleporter_2_c.y * pac::TILE_SIZE.height ), teleportation_pairs_info[i].teleporter_2_d);
 	}
@@ -254,7 +254,7 @@ void pac::Map::displayTeleportationTiles(sf::RenderWindow & window) const
 
 pac::Coordinate pac::Map::getCoordinate(const pac::Position & position) const
 {
-	return pac::Coordinate( (position.x - this->position.x) / (pac::TILE_SIZE.width), (position.y - this->position.y) / (pac::TILE_SIZE.height) );
+	return pac::Coordinate((position.x - this->position.x) / (pac::TILE_SIZE.width), (position.y - this->position.y) / (pac::TILE_SIZE.height));
 }
 
 pac::Position pac::Map::getPosition(const pac::Coordinate & coordinate) const
@@ -327,7 +327,7 @@ void pac::Map::getTeleportationPairs(std::vector <pac::TeleportationPair*> & tel
 {
 	pac::TeleportationPair *temp;
 
-	for (int i = 0; i < this->teleportation_pairs.size(); i++)
+	for (unsigned int i = 0; i < this->teleportation_pairs.size(); i++)
 	{
 		temp = &(this->teleportation_pairs[i]);
 		teleportation_pairs.push_back(temp);

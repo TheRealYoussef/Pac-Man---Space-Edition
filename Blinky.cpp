@@ -11,7 +11,7 @@ pac::Blinky::Blinky()
 	{
 		previous_directions[i] = direction;
 	}
-	mode = pac::FRIGHTENED;
+	mode = pac::SCATTER;
 	get_out_of_ghost_house_points = -1;
 }
 

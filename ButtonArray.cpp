@@ -112,13 +112,8 @@ void pac::ButtonArray::readFile(std::ifstream & file, std::vector <pac::Image> &
 
 void pac::ButtonArray::setOriginAndPosition(std::vector <pac::Image> & images, const int & index)
 {
-	float total_heights_of_buttons_above = 0;
-	for (int j = 0; j < index; j++)
-	{
-		total_heights_of_buttons_above += images[j].sprite.getLocalBounds().height;
-	}
 	images[index].sprite.setOrigin(sf::Vector2f(images[index].sprite.getLocalBounds().width / 2, images[index].sprite.getLocalBounds().height / 2));
-	images[index].sprite.setPosition(sf::Vector2f(array_starting_position.x + index * distance_between_buttons.x, array_starting_position.y + index * distance_between_buttons.y + total_heights_of_buttons_above));
+	images[index].sprite.setPosition(sf::Vector2f(array_starting_position.x + index * distance_between_buttons.x, array_starting_position.y + index * distance_between_buttons.y));
 }
 
 void pac::ButtonArray::fileFailure(std::ifstream & file, const std::string & file_path)

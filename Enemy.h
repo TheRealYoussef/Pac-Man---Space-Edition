@@ -9,9 +9,21 @@
 
 namespace pac
 {
+
+	class Player;
+
 	class Enemy : public Character
 	{
 	private:
+
+		//The images of the ghost in frightened mode (state 1)
+		Image frightened_images_state_1[NUMBER_OF_SPRITES_PER_CHARACTER];
+
+		//The images of the ghost in frightened mode (state 2)
+		Image frightened_images_state_2[NUMBER_OF_SPRITES_PER_CHARACTER];
+
+		//The images of the enemy when it is returning to the ghost house
+		Image eaten_images[NUMBER_OF_SPRITES_PER_CHARACTER];
 
 		//The coordinate of the enemy's center point
 		Coordinate center_coordinate;
@@ -22,17 +34,17 @@ namespace pac
 		//Did the enemy change its direction?
 		bool same_direction;
 
-		//Scatter mode clock
-		sf::Clock scatter_clock;
-
-		//Chase mode clock
-		sf::Clock chase_clock;
-
-		//Frightened mode clock
-		sf::Clock frightened_clock;
+		//Frightened animation state
+		AnimationState frightened_animation_state;
 
 		//Is the enemy forced to move in the opposite direction?
 		bool forced_switch;
+
+		//The ghost's previous mode
+		GhostMode previous_mode;
+
+		//The timer of the previous mode
+		sf::Time previous_time;
 
 		//If the tile is not a wall tile, then calculate the distance from its center to the target position and store that distance in the distances vector
 		//Otherwise, store -1
@@ -63,7 +75,7 @@ namespace pac
 		void scatter();
 
 		//Choose a random target position and control when the frightened mode ends
-		void run(const Map & map);
+		void run(Map & map);
 
 		//Control the movement in the ghost house
 		void house(Map & map);
@@ -71,7 +83,16 @@ namespace pac
 		//Leave the ghost house
 		void leaveHouse(const Map & map);
 
+		//Switch between chase and scatter modes
+		void switchMode(const GhostMode & mode, const sf::Time & time, const bool & switch_direction, const bool & scatter_position);
+
 	protected:
+
+		//Mode clock and time
+		ClockTime mode_clock_time;
+
+		//The enemy's current state (scatter, chase, or frightened)
+		GhostMode mode;
 
 		//The pac::NUMBER_OF_SAFETY_FRAMES previous directions of the enemy
 		std::vector <Direction> previous_directions;
@@ -81,9 +102,6 @@ namespace pac
 
 		//The enemy's scatter position
 		Position scatter_position;
-
-		//The enemy's current state (scatter, chase, or frightened)
-		GhostMode mode;
 
 		//The number of points the player has to eat for the enemy to get out of the ghost house
 		int get_out_of_ghost_house_points;
@@ -96,14 +114,32 @@ namespace pac
 		//Set the enemy's scatter position
 		void setScatterPosition(const Map & map, const Coordinate & coordinate);
 
+		//Load the images of the enemy in frightened and eaten modes
+		void loadImages(const std::string & frightened_file_path_1, const std::string & frightened_file_path_2, const std::string & eaten_file_path);
+
 		//Control the enemy's current mode/state
 		void changeMode(pac::Map & map);
+
+		//Target a position depending on the enemy's personality
+		virtual void targetPosition(const Player & player);
 
 		//Choose the next direction to take
 		void chooseBestDirection(Map & map);
 
 		//Frighten the enemy
 		void frighten();
+
+		//Move the frightened sprites
+		void moveFrightened();
+
+		//Play the frightened state animation
+		void frightenedAnimation();
+
+		//Set the position of the frightened sprites
+		void setFrightenedPosition(const Position & position);
+
+		//Display the enemy
+		void display(sf::RenderWindow & window) const;
 
 	};
 }

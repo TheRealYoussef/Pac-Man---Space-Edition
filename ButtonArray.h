@@ -55,7 +55,7 @@ namespace pac
 		bool error_message_displayed;
 
 		//The number of functions each button has
-		std::vector <int> number_of_functions;
+		std::vector <unsigned int> number_of_functions;
 
 		//Parse file containg the file paths of the images of the buttons in one of their 2 states (normal or selected)
 		//Loads the images and sets them to their corresponding sf::Sprite's

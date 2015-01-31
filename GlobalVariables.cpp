@@ -135,7 +135,7 @@ pac::Velocity& pac::Velocity::operator=(const pac::Velocity & velocity)
 	return *this; 
 }
 
-pac::Velocity& pac::Velocity::operator=(const int & value) 
+pac::Velocity& pac::Velocity::operator=(const float & value) 
 { 
 	x = value; 
 	y = value; 
