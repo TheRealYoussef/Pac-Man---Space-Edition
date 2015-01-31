@@ -63,7 +63,7 @@ void pac::Map::readImagePathsAndTileTypes(std::ifstream & input)
 			textures[number_of_files].loadFromFile(file_path);
 			number_of_files++;
 			input >> tile_type;
-			temp = (tile_type == "WALL") ? pac::WALL : (tile_type == "NORMAL") ? pac::NORMAL : (tile_type == "TELEPORTATION") ? pac::TELEPORTATION : pac::DOOR;
+			temp = (tile_type == "WALL") ? pac::WALL : (tile_type == "NORMAL") ? pac::NORMAL : pac::TELEPORTATION;
 			tile_types.push_back(temp);
 		}
 	} while (file_path_char != '*');

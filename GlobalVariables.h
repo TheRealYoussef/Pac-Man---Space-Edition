@@ -79,13 +79,11 @@ namespace pac
 	typedef void(*FUNCTIONS) ();
 
 	//The type of the tile
-	//Can be { WALL, NORMAL, INTERSECTION, TELEPORTATION, DOOR }
 	//WALL: tile contains a wall
 	//NORMAL: normal tile for walking
-	//INTERSECTION: normal tile for walking but is an intersection between 3 or more paths
 	//TELEPORTATION: special tile which teleports the object standing on it to another TELEPORTATION tile linked to it
-	//DOOR: special tile which can be passed through in one direction only
-	enum TileType { WALL, NORMAL, TELEPORTATION, DOOR, NO_TYPE };
+	//NO_TYPE: no tile present
+	enum TileType { WALL, NORMAL, TELEPORTATION, NO_TYPE };
 
 	//A part of a tile
 	//A tile has 4 TileBox
