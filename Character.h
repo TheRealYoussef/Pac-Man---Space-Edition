@@ -92,6 +92,12 @@ namespace pac
 		//Is the character colliding with a wall in the direction specified?
 		bool isColliding(const Direction & direction, Map & map);
 
+		//Set the position of the remaining sprites if the character is an enemy
+		virtual void setFrightenedPosition(const Position & position);
+
+		//Move the frightened sprites
+		virtual void moveFrightened();
+
 	public:
 
 		//Default constructor
@@ -121,9 +127,6 @@ namespace pac
 
 		//Set the character's position
 		void setPosition(const Position & position);
-
-		//Set the position of the remaining sprites if the character is an enemy
-		virtual void setFrightenedPosition(const Position & position);
 
 		//Get the character's current position
 		Position getPosition() const;

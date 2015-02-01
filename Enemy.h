@@ -86,6 +86,12 @@ namespace pac
 		//Switch between chase and scatter modes
 		void switchMode(const GhostMode & mode, const sf::Time & time, const bool & switch_direction, const bool & scatter_position);
 
+		//Set the position of the frightened sprites
+		void setFrightenedPosition(const Position & position);
+
+		//Move the frightened sprites
+		void moveFrightened();
+
 	protected:
 
 		//Mode clock and time
@@ -129,14 +135,8 @@ namespace pac
 		//Frighten the enemy
 		void frighten();
 
-		//Move the frightened sprites
-		void moveFrightened();
-
 		//Play the frightened state animation
 		void frightenedAnimation();
-
-		//Set the position of the frightened sprites
-		void setFrightenedPosition(const Position & position);
 
 		//Display the enemy
 		void display(sf::RenderWindow & window) const;

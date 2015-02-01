@@ -144,7 +144,6 @@ void pac::Game::enemyFunctions(pac::Enemy *enemy, const float & time_per_frame)
 	(*enemy).targetPosition(*player);
 	(*enemy).chooseBestDirection(*map);
 	(*enemy).move(*map, time_per_frame);
-	(*enemy).moveFrightened();
 	(*enemy).teleport();
 }
 
@@ -154,7 +153,6 @@ void pac::Game::inkyFunctions(const float & time_per_frame)
 	(*inky).targetPosition(*player, *blinky);
 	(*inky).chooseBestDirection(*map);
 	(*inky).move(*map, time_per_frame);
-	(*inky).moveFrightened();
 	(*inky).teleport();
 }
 

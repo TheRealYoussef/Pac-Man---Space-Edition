@@ -336,6 +336,7 @@ void pac::Enemy::moveFrightened()
 	{
 		frightened_images_state_1[i].sprite.move(velocity.x, velocity.y);
 		frightened_images_state_2[i].sprite.move(velocity.x, velocity.y);
+		eaten_images[i].sprite.move(velocity.x, velocity.y);
 	}
 }
 

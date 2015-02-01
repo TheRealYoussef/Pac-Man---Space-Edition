@@ -43,6 +43,14 @@ void pac::Character::move(pac::Map & map, const float & time_per_frame)
 	{
 		images[i].sprite.move(velocity.x, velocity.y);
 	}
+	if (character_type == pac::ENEMY)
+	{
+		moveFrightened();
+	}
+}
+
+void pac::Character::moveFrightened()
+{
 }
 
 void pac::Character::teleport()
@@ -234,10 +242,10 @@ void pac::Character::setPosition(const pac::Position & position)
 	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
 	{
 		images[i].sprite.setPosition(position.x, position.y);
-		if (character_type == pac::ENEMY)
-		{
-			setFrightenedPosition(position);
-		}
+	}
+	if (character_type == pac::ENEMY)
+	{
+		setFrightenedPosition(position);
 	}
 }
 

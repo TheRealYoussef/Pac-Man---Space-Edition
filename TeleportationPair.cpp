@@ -79,10 +79,6 @@ void pac::TeleportationPair::switchLeave(pac::Character & character, const pac::
 void pac::TeleportationPair::setPosition(pac::Character & character, const pac::Position & position, const pac::Direction & direction) const
 {
 	character.setPosition(position);
-	if (character.getCharacterType() == pac::ENEMY)
-	{
-		character.setFrightenedPosition(position);
-	}
 	character.setDirection(opposite(direction));
 }
 

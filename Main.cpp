@@ -43,7 +43,7 @@ int main()
 			}
 			button.scaleSelectedButton();
 			game.functionsInGameLoop(window, time_per_frame);
-			window.clear(sf::Color(255, 255, 255));
+			window.clear(sf::Color(0, 0, 0));
 			//button.display(window);
 			game.display(window);
 			window.display();
