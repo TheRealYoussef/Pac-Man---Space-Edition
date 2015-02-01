@@ -314,11 +314,11 @@ void pac::Enemy::enterHouse()
 	{
 		direction = pac::DOWN;
 		move_without_checking = true;
-		move_speed = pac::ENEMY_HOUSE_MOVE_SPEED;
 	}
 	else
 	{
 		mode = pac::LEAVE_HOUSE;
+		move_speed = pac::ENEMY_HOUSE_MOVE_SPEED;
 	}
 }
 

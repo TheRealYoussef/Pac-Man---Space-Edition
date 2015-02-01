@@ -56,6 +56,9 @@ namespace pac
 		//Move exploding sprites
 		void moveExploding();
 
+		//The the position of the exploding sprites
+		void setExplodingPosition(const Position & position);
+
 		//Kill the player
 		void killPlayer();
 

@@ -251,6 +251,10 @@ void pac::Character::setPosition(const pac::Position & position)
 	{
 		setFrightenedPosition(position);
 	}
+	if (character_type == pac::PLAYER)
+	{
+		setExplodingPosition(position);
+	}
 }
 
 void pac::Character::setFrightenedPosition(const pac::Position & position)
@@ -272,5 +276,9 @@ pac::Character::~Character()
 }
 
 void pac::Character::moveExploding()
+{
+}
+
+void pac::Character::setExplodingPosition(const pac::Position & position)
 {
 }

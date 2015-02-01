@@ -259,7 +259,7 @@ namespace pac
 	const float PLAYER_MOVE_SPEED = 100.f;
 
 	//Enemy's normal movement speed
-	const float ENEMY_MOVE_SPEED = 80.f;
+	const float ENEMY_MOVE_SPEED = 100.f;
 
 	//Enemy's movement speed in frightened mode
 	const float ENEMY_FRIGHTENED_MOVE_SPEED = 40.f;
@@ -294,10 +294,10 @@ namespace pac
 	const sf::Time FRIGHTENED_ANIMATION_TIME = sf::seconds(0.2f);
 
 	//The time between each state in the exploding animation
-	const sf::Time EXPLODING_ANIMATION_TIME = sf::seconds(0.7f);
+	const sf::Time EXPLODING_ANIMATION_TIME = sf::seconds(1.f);
 
 	//The duration of the death animation
-	const sf::Time DURATION_OF_DEATH = sf::seconds(1.2f);
+	const sf::Time DURATION_OF_DEATH = sf::seconds(2.f);
 
 	//The position of the map in the SFML window
 	const Position MAP_POSITION(144.f, 52.f);

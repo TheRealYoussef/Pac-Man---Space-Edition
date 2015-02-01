@@ -101,6 +101,9 @@ namespace pac
 		//Move exploding sprites
 		virtual void moveExploding();
 
+		//Set the position of the exploding sprites
+		virtual void setExplodingPosition(const Position & position);
+
 	public:
 
 		//Default constructor

@@ -50,7 +50,7 @@ void pac::Player::playExplodingAnimation()
 		else
 		{
 			exploding_animation_state = pac::STATE_1;
-			alive = true;
+			//alive = true;
 		}
 	}
 }
@@ -212,7 +212,7 @@ void pac::Player::handleGhostCollision(pac::Blinky & blinky, pac::Pinky & pinky,
 
 bool pac::Player::collidedEnemy(pac::Enemy & enemy)
 {
-	if (lessThan(getPosition().x + pac::CHARACTER_SIZE.width, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f - pac::TILE_SIZE.width / 2.f) || biggerThan(getPosition().x, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f + pac::TILE_SIZE.width / 2.f) || lessThan(getPosition().y + pac::CHARACTER_SIZE.height, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f - pac::TILE_SIZE.height / 2.f) || biggerThan(getPosition().y, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f + pac::TILE_SIZE.height / 2.f))
+	if (lessThan(getPosition().x + pac::CHARACTER_SIZE.width / 2.f + pac::TILE_SIZE.width / 2.f, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f - pac::TILE_SIZE.width / 2.f) || biggerThan(getPosition().x + pac::CHARACTER_SIZE.width / 2.f - pac::TILE_SIZE.width / 2.f, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f + pac::TILE_SIZE.width / 2.f) || lessThan(getPosition().y + pac::CHARACTER_SIZE.height / 2.f + pac::TILE_SIZE.height / 2.f, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f - pac::TILE_SIZE.height / 2.f) || biggerThan(getPosition().y + pac::CHARACTER_SIZE.height / 2.f - pac::TILE_SIZE.width / 2.f, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f + pac::TILE_SIZE.height / 2.f))
 	{
 		return false;
 	}
@@ -256,5 +256,13 @@ void pac::Player::killPlayer()
 		number_of_lives--;
 		animation_state_clock.restart();
 		animation_length_clock.restart();
+	}
+}
+
+void pac::Player::setExplodingPosition(const pac::Position & position)
+{
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	{
+		exploding_images[i].sprite.setPosition(position.x, position.y);
 	}
 }
