@@ -46,6 +46,12 @@ namespace pac
 		//The timer of the previous mode
 		sf::Time previous_time;
 
+		//The position in front of the door
+		Position top_of_ghost_house_position;
+
+		//The center position of the ghost house
+		Position ghost_house_center_position;
+
 		//If the tile is not a wall tile, then calculate the distance from its center to the target position and store that distance in the distances vector
 		//Otherwise, store -1
 		void calculateDistance(const Coordinate & coordinate, const Direction & direction, Map & map);
@@ -82,6 +88,9 @@ namespace pac
 
 		//Leave the ghost house
 		void leaveHouse(const Map & map);
+
+		//Enter the house
+		void enterHouse();
 
 		//Switch between chase and scatter modes
 		void switchMode(const GhostMode & mode, const sf::Time & time, const bool & switch_direction, const bool & scatter_position);
@@ -135,8 +144,14 @@ namespace pac
 		//Frighten the enemy
 		void frighten();
 
+		//Return to the position infront of the door
+		void returnHouse();
+
 		//Play the frightened state animation
 		void frightenedAnimation();
+
+		//Return current mode of the ghost
+		GhostMode getMode() const;
 
 		//Display the enemy
 		void display(sf::RenderWindow & window) const;

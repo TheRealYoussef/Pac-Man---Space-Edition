@@ -25,6 +25,8 @@ pac::Enemy::Enemy()
 void pac::Enemy::setScatterPosition(const pac::Map & map, const pac::Coordinate & coordinate)
 {
 	scatter_position = pac::Position(map.getMapPosition().x + coordinate.x * pac::TILE_SIZE.width + pac::TILE_SIZE.width / 2.f, map.getMapPosition().y + coordinate.y * pac::TILE_SIZE.height + pac::TILE_SIZE.height / 2.f);
+	top_of_ghost_house_position = pac::Position(map.getOutsideGhostHousePosition().x + TILE_SIZE.width, map.getOutsideGhostHousePosition().y + TILE_SIZE.height);
+	ghost_house_center_position = map.getGhostHouseCenterPosition();
 }
 
 void pac::Enemy::loadImages(const std::string & frightened_file_path_1, const std::string & frightened_file_path_2, const std::string & eaten_file_path)
@@ -47,7 +49,7 @@ void pac::Enemy::loadImages(const std::string & frightened_file_path_1, const st
 		frightened_images_state_1[i].sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y));
 		frightened_images_state_2[i].sprite.setTexture(frightened_images_state_2[i].texture);
 		frightened_images_state_2[i].sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y));
-		eaten_images[i].sprite.setTexture(frightened_images_state_1[i].texture);
+		eaten_images[i].sprite.setTexture(eaten_images[i].texture);
 		eaten_images[i].sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y));
 	}
 }
@@ -58,7 +60,7 @@ void pac::Enemy::targetPosition(const pac::Player & player)
 
 void pac::Enemy::chooseBestDirection(pac::Map & map)
 {
-	if (mode != pac::HOUSE && mode != pac::LEAVE_HOUSE)
+	if (mode != pac::HOUSE && mode != pac::LEAVE_HOUSE && mode != pac::ENTER_HOUSE)
 	{
 		if (mode != pac::FRIGHTENED || (mode == pac::FRIGHTENED && previous_mode != pac::HOUSE && previous_mode != pac::LEAVE_HOUSE))
 		{
@@ -171,6 +173,12 @@ void pac::Enemy::changeMode(pac::Map & map)
 		break;
 	case pac::LEAVE_HOUSE:
 		leaveHouse(map);
+		break;
+	case pac::RETURN_HOUSE:
+		returnHouse();
+		break;
+	case pac::ENTER_HOUSE:
+		enterHouse();
 		break;
 	}
 }
@@ -288,6 +296,32 @@ void pac::Enemy::leaveHouse(const pac::Map & map)
 	}
 }
 
+void pac::Enemy::returnHouse()
+{
+	move_speed = pac::ENEMY_RETURN_MOVE_SPEED;
+	mode = pac::RETURN_HOUSE;
+	target_position = top_of_ghost_house_position;
+	if ((round(getPosition().x) + CHARACTER_SIZE.width / 2.f == target_position.x) && round(getPosition().y) + CHARACTER_SIZE.height / 2.f == target_position.y)
+	{
+		setPosition(pac::Position(top_of_ghost_house_position.x - TILE_SIZE.width, top_of_ghost_house_position.y - TILE_SIZE.height));
+		mode = pac::ENTER_HOUSE;
+	}
+}
+
+void pac::Enemy::enterHouse()
+{
+	if (round(getPosition().y) != ghost_house_center_position.y)
+	{
+		direction = pac::DOWN;
+		move_without_checking = true;
+		move_speed = pac::ENEMY_HOUSE_MOVE_SPEED;
+	}
+	else
+	{
+		mode = pac::LEAVE_HOUSE;
+	}
+}
+
 bool pac::Enemy::checkPreviousDirections(const pac::Direction & direction)
 {
 	for (int i = 0; i < NUMBER_OF_SAFETY_FRAMES; i++)
@@ -314,20 +348,23 @@ bool pac::Enemy::checkPreviousDirectionsOpposites(const pac::Direction & directi
 
 void pac::Enemy::frighten()
 {
-	previous_time = mode_clock_time.clock.getElapsedTime();
-	mode_clock_time.time -= previous_time;
-	frightened_animation_state = pac::STATE_1;
-	if (mode != pac::FRIGHTENED)
+	if (mode != pac::RETURN_HOUSE && mode != pac::ENTER_HOUSE)
 	{
-		previous_mode = mode;
+		previous_time = mode_clock_time.clock.getElapsedTime();
+		mode_clock_time.time -= previous_time;
+		frightened_animation_state = pac::STATE_1;
+		if (mode != pac::FRIGHTENED)
+		{
+			previous_mode = mode;
+		}
+		mode = pac::FRIGHTENED;
+		if (previous_mode != pac::HOUSE && previous_mode != pac::LEAVE_HOUSE)
+		{
+			direction = opposite(direction);
+			move_speed = pac::ENEMY_FRIGHTENED_MOVE_SPEED;
+		}
+		mode_clock_time.clock.restart();
 	}
-	mode = pac::FRIGHTENED;
-	if (previous_mode != pac::HOUSE && previous_mode != pac::LEAVE_HOUSE)
-	{
-		direction = opposite(direction);
-		move_speed = pac::ENEMY_FRIGHTENED_MOVE_SPEED;
-	}
-	mode_clock_time.clock.restart();
 }
 
 void pac::Enemy::moveFrightened()
@@ -352,27 +389,24 @@ void pac::Enemy::setFrightenedPosition(const pac::Position & position)
 
 void pac::Enemy::display(sf::RenderWindow & window) const
 {
-	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	if (mode == pac::FRIGHTENED)
 	{
-		if (mode == pac::FRIGHTENED)
+		if (frightened_animation_state == pac::STATE_1)
 		{
-			if (frightened_animation_state == pac::STATE_1)
-			{
-				window.draw(frightened_images_state_1[(int)direction * 2 + (int)animation_state].sprite);
-			}
-			else if (frightened_animation_state == pac::STATE_2)
-			{
-				window.draw(frightened_images_state_2[(int)direction * 2 + (int)animation_state].sprite);
-			}
+			window.draw(frightened_images_state_1[(int)direction * 2 + (int)animation_state].sprite);
 		}
-		else if (mode == pac::RETURN_HOUSE || mode == pac::ENTER_HOUSE)
+		else if (frightened_animation_state == pac::STATE_2)
 		{
-			window.draw(eaten_images[(int)direction * 2 + (int)animation_state].sprite);
+			window.draw(frightened_images_state_2[(int)direction * 2 + (int)animation_state].sprite);
 		}
-		else
-		{
-			window.draw(images[(int)direction * 2 + (int)animation_state].sprite);
-		}
+	}
+	else if (mode == pac::RETURN_HOUSE || mode == pac::ENTER_HOUSE)
+	{
+		window.draw(eaten_images[(int)direction * 2 + (int)animation_state].sprite);
+	}
+	else
+	{
+		window.draw(images[(int)direction * 2 + (int)animation_state].sprite);
 	}
 }
 
@@ -385,4 +419,9 @@ void pac::Enemy::frightenedAnimation()
 			frightened_animation_state = (frightened_animation_state == pac::STATE_1) ? pac::STATE_2 : pac::STATE_1;
 		}
 	}
+}
+
+pac::GhostMode pac::Enemy::getMode() const
+{
+	return mode;
 }

@@ -98,6 +98,9 @@ namespace pac
 		//Move the frightened sprites
 		virtual void moveFrightened();
 
+		//Move exploding sprites
+		virtual void moveExploding();
+
 	public:
 
 		//Default constructor

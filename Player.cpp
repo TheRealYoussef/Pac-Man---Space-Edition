@@ -15,6 +15,44 @@ pac::Player::Player()
 	next_direction = pac::NONE;
 	direction = pac::RIGHT;
 	move_speed = pac::PLAYER_MOVE_SPEED;
+	alive = true;
+}
+
+void pac::Player::loadExplodingImage(const std::string & exploding_file_path)
+{
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
+	{
+		exploding_images[i].texture.loadFromFile(exploding_file_path, sf::IntRect(0.f, pac::CHARACTER_SIZE.width / 2 * i, pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.height));
+	}
+	for (int i = 1; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i += 2)
+	{
+		exploding_images[i].texture.loadFromFile(exploding_file_path, sf::IntRect(pac::CHARACTER_SIZE.width, pac::CHARACTER_SIZE.width / 2 * i - pac::CHARACTER_SIZE.width / 2, pac::CHARACTER_SIZE.height, pac::CHARACTER_SIZE.height));
+	}
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	{
+		exploding_images[i].sprite.setTexture(exploding_images[i].texture);
+		exploding_images[i].sprite.setPosition(getPosition().x, getPosition().y);
+	}
+}
+
+void pac::Player::playExplodingAnimation()
+{
+	if (!alive)
+	{
+		if (animation_length_clock.getElapsedTime() <= pac::DURATION_OF_DEATH)
+		{
+			if (animation_state_clock.getElapsedTime() >= pac::PLAYER_ANIMATION_TIME)
+			{
+				exploding_animation_state = (exploding_animation_state == pac::STATE_1) ? pac::STATE_2 : pac::STATE_1;
+				animation_state_clock.restart();
+			}
+		}
+		else
+		{
+			exploding_animation_state = pac::STATE_1;
+			alive = true;
+		}
+	}
 }
 
 void pac::Player::chooseDirection(const sf::Event & event, sf::RenderWindow & window, pac::Map & map)
@@ -24,16 +62,28 @@ void pac::Player::chooseDirection(const sf::Event & event, sf::RenderWindow & wi
 		switch (event.key.code)
 		{
 		case sf::Keyboard::Right:
-			setDirection(pac::RIGHT, map);
+			if (alive)
+			{
+				setDirection(pac::RIGHT, map);
+			}
 			break;
 		case sf::Keyboard::Left:
-			setDirection(pac::LEFT, map);
+			if (alive)
+			{
+				setDirection(pac::LEFT, map);
+			}
 			break;
 		case sf::Keyboard::Up:
-			setDirection(pac::UP, map);
+			if (alive)
+			{
+				setDirection(pac::UP, map);
+			}
 			break;
 		case sf::Keyboard::Down:
-			setDirection(pac::DOWN, map);
+			if (alive)
+			{
+				setDirection(pac::DOWN, map);
+			}
 			break;
 		}
 	}
@@ -112,14 +162,99 @@ void pac::Player::executeStoredDirection(pac::Map & map)
 	}
 }
 
+void pac::Player::handleGhostCollision(pac::Blinky & blinky, pac::Pinky & pinky, pac::Inky & inky, pac::Clyde & clyde)
+{
+	if (collidedEnemy(blinky))
+	{
+		if (blinky.getMode() == pac::FRIGHTENED)
+		{
+			blinky.returnHouse();
+		}
+		else if (blinky.getMode() == pac::CHASE || blinky.getMode() == pac::SCATTER || blinky.getMode() == pac::LEAVE_HOUSE)
+		{
+			killPlayer();
+		}
+	}
+	if (collidedEnemy(pinky))
+	{
+		if (pinky.getMode() == pac::FRIGHTENED)
+		{
+			pinky.returnHouse();
+		}
+		else if (pinky.getMode() == pac::CHASE || pinky.getMode() == pac::SCATTER || pinky.getMode() == pac::LEAVE_HOUSE)
+		{
+			killPlayer();
+		}
+	}
+	if (collidedEnemy(inky))
+	{
+		if (inky.getMode() == pac::FRIGHTENED)
+		{
+			inky.returnHouse();
+		}
+		else if (inky.getMode() == pac::CHASE || inky.getMode() == pac::SCATTER || inky.getMode() == pac::LEAVE_HOUSE)
+		{
+			killPlayer();
+		}
+	}
+	if (collidedEnemy(clyde))
+	{
+		if (clyde.getMode() == pac::FRIGHTENED)
+		{
+			clyde.returnHouse();
+		}
+		else if (clyde.getMode() == pac::CHASE || clyde.getMode() == pac::SCATTER || clyde.getMode() == pac::LEAVE_HOUSE)
+		{
+			killPlayer();
+		}
+	}
+}
+
+bool pac::Player::collidedEnemy(pac::Enemy & enemy)
+{
+	if (lessThan(getPosition().x + pac::CHARACTER_SIZE.width, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f - pac::TILE_SIZE.width / 2.f) || biggerThan(getPosition().x, enemy.getPosition().x + pac::CHARACTER_SIZE.width / 2.f + pac::TILE_SIZE.width / 2.f) || lessThan(getPosition().y + pac::CHARACTER_SIZE.height, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f - pac::TILE_SIZE.height / 2.f) || biggerThan(getPosition().y, enemy.getPosition().y + pac::CHARACTER_SIZE.height / 2.f + pac::TILE_SIZE.height / 2.f))
+	{
+		return false;
+	}
+	return true;
+}
+
 void pac::Player::display(sf::RenderWindow & window) const
 {
-	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	if (exploding_animation_state == pac::STATE_1)
 	{
 		window.draw(images[(int)direction * 2 + (int)animation_state].sprite);
 	}
+	else
+	{
+		window.draw(exploding_images[(int)direction * 2 + (int)animation_state].sprite);
+	}
+}
+
+bool pac::Player::isAlive() const
+{
+	return alive;
 }
 
 pac::Player::~Player()
 {
+}
+
+void pac::Player::moveExploding()
+{
+	for (int i = 0; i < pac::NUMBER_OF_SPRITES_PER_CHARACTER; i++)
+	{
+		exploding_images[i].sprite.move(velocity.x, velocity.y);
+	}
+}
+
+void pac::Player::killPlayer()
+{
+	if (alive)
+	{
+		alive = false;
+		number_of_lives--;
+		animation_state_clock.restart();
+		animation_length_clock.restart();
+	}
 }

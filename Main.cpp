@@ -15,8 +15,8 @@ int main()
 	float time_per_frame;
 	int FPS_counter = 0;
 	FPS.time = sf::seconds(1);
-	pac::ButtonArray button(3,pac::Distance(150.f, -50.f),pac::Position(100.f, 100.f), pac::Scale(1.2f, 1.2f), sf::seconds(0.2f), "Assets/Files/Normal Buttons File Paths.txt");
 	pac::Game game;
+	pac::ButtonArray button_array(3, pac::Distance(0, 100), pac::Position(100, 100), pac::Scale(1.2f, 1.2f), sf::seconds(0.2f), "Assets/Files/Normal Buttons File Paths.txt");
 	FPS.clock.restart();
 	time_per_frame_clock.restart();
 	while (window.isOpen())
@@ -39,12 +39,12 @@ int main()
 				if (event.type == sf::Event::Closed)
 					window.close();
 				game.functionsInEventLoop(event, window);
-				button.setState(event, window);
+				button_array.setState(event, window);
 			}
-			button.scaleSelectedButton();
+			button_array.scaleSelectedButton();
 			game.functionsInGameLoop(window, time_per_frame);
 			window.clear(sf::Color(0, 0, 0));
-			//button.display(window);
+			//button_array.display(window);
 			game.display(window);
 			window.display();
 		}

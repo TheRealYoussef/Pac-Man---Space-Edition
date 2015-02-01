@@ -38,6 +38,7 @@ void pac::Game::loadPlayer()
 {
 	player = new pac::Player;
 	(*player).init((*map).getPlayerStartingPosition(), "Assets/Sprites/Pac Man.png", *map);
+	(*player).loadExplodingImage("Assets/Sprites/Pac Man Exploding.png");
 }
 
 void pac::Game::loadBlinky()
@@ -45,14 +46,14 @@ void pac::Game::loadBlinky()
 	blinky = new pac::Blinky;
 	(*blinky).init((*map).getBlinkyStartingPosition(), "Assets/Sprites/Blinky.png", *map);
 	(*blinky).setScatterPosition(*map, pac::Coordinate((*map).getMapSize().col, 0));
-	(*blinky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Blinky.png");
+	(*blinky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Eaten.png");
 }
 
 void pac::Game::loadPinky()
 {
 	pinky = new pac::Pinky;
 	(*pinky).init((*map).getPinkyStartingPosition(), "Assets/Sprites/Pinky.png", *map);
-	(*pinky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Blinky.png");
+	(*pinky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Eaten.png");
 	(*pinky).setScatterPosition(*map, pac::Coordinate(0, 0));
 }
 
@@ -61,7 +62,7 @@ void pac::Game::loadInky()
 	inky = new pac::Inky;
 	(*inky).init((*map).getInkyStartingPosition(), "Assets/Sprites/Inky.png", *map);
 	(*inky).setScatterPosition(*map, pac::Coordinate((*map).getMapSize().col, (*map).getMapSize().row));
-	(*inky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Blinky.png");
+	(*inky).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Eaten.png");
 }
 
 void pac::Game::loadClyde()
@@ -69,7 +70,7 @@ void pac::Game::loadClyde()
 	clyde = new pac::Clyde;
 	(*clyde).init((*map).getClydeStartingPosition(), "Assets/Sprites/Clyde.png", *map);
 	(*clyde).setScatterPosition(*map, pac::Coordinate(0, (*map).getMapSize().row));
-	(*clyde).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Blinky.png");
+	(*clyde).loadImages("Assets/Sprites/Frightened 1.png", "Assets/Sprites/Frightened 2.png", "Assets/Sprites/Eaten.png");
 }
 
 void pac::Game::restartClocks()
@@ -108,9 +109,14 @@ void pac::Game::playerFunctions(const float & time_per_frame)
 		(*player).playAnimation();
 		player_animation_clock.restart();
 	}
+	(*player).playExplodingAnimation();
 	(*player).executeStoredDirection(*map);
 	(*player).eatPoints(*map, *blinky, *pinky, *inky, *clyde);
-	(*player).move(*map, time_per_frame);
+	(*player).handleGhostCollision(*blinky, *pinky, *inky, *clyde);
+	if ((*player).isAlive())
+	{
+		(*player).move(*map, time_per_frame);
+	}
 	(*player).teleport();
 }
 
@@ -143,7 +149,10 @@ void pac::Game::enemyFunctions(pac::Enemy *enemy, const float & time_per_frame)
 	(*enemy).changeMode(*map);
 	(*enemy).targetPosition(*player);
 	(*enemy).chooseBestDirection(*map);
-	(*enemy).move(*map, time_per_frame);
+	if ((*player).isAlive())
+	{
+		(*enemy).move(*map, time_per_frame);
+	}
 	(*enemy).teleport();
 }
 
@@ -152,7 +161,10 @@ void pac::Game::inkyFunctions(const float & time_per_frame)
 	(*inky).changeMode(*map);
 	(*inky).targetPosition(*player, *blinky);
 	(*inky).chooseBestDirection(*map);
-	(*inky).move(*map, time_per_frame);
+	if ((*player).isAlive())
+	{
+		(*inky).move(*map, time_per_frame);
+	}
 	(*inky).teleport();
 }
 

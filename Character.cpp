@@ -47,6 +47,10 @@ void pac::Character::move(pac::Map & map, const float & time_per_frame)
 	{
 		moveFrightened();
 	}
+	else if (character_type == pac::PLAYER)
+	{
+		moveExploding();
+	}
 }
 
 void pac::Character::moveFrightened()
@@ -264,5 +268,9 @@ pac::CharacterType pac::Character::getCharacterType() const
 }
 
 pac::Character::~Character()
+{
+}
+
+void pac::Character::moveExploding()
 {
 }

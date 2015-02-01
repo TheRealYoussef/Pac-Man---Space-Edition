@@ -20,6 +20,21 @@ namespace pac
 
 	private:
 
+		//The exploding sprite sheet of the player
+		Image exploding_images[NUMBER_OF_SPRITES_PER_CHARACTER];
+
+		//The explosion animation states
+		AnimationState exploding_animation_state;
+
+		//The clock that controls the change of animation state
+		sf::Clock animation_state_clock;
+
+		//The clock that controls the length of the animation state
+		sf::Clock animation_length_clock;
+
+		//Is the player alive
+		bool alive;
+
 		//The player's next direction
 		Direction next_direction;
 
@@ -35,10 +50,25 @@ namespace pac
 		//Frighten the ghosts
 		void frightenGhosts(Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
 
+		//True if collided with enemy
+		bool collidedEnemy(Enemy & enemy);
+
+		//Move exploding sprites
+		void moveExploding();
+
+		//Kill the player
+		void killPlayer();
+
 	public:
 
 		//Default constructor
 		Player();
+
+		//Load exploding image
+		void loadExplodingImage(const std::string & exploding_file_path);
+
+		//Play exploding animation
+		void playExplodingAnimation();
 
 		//User clicks to choose the next direction
 		void chooseDirection(const sf::Event & event, sf::RenderWindow & window, Map & map);
@@ -49,8 +79,14 @@ namespace pac
 		//Player eats the points on the map
 		void eatPoints(Map & map, Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
 
+		//Handle all ghost collision
+		void handleGhostCollision(Blinky & blinky, Pinky & pinky, Inky & inky, Clyde & clyde);
+
 		//Display the player
 		void display(sf::RenderWindow & window) const;
+
+		//Is the player alive
+		bool isAlive() const;
 
 		//Destructor
 		~Player();

@@ -266,7 +266,10 @@ namespace pac
 
 	//Enemy's movement speed inside the ghost house
 	const float ENEMY_HOUSE_MOVE_SPEED = 50.f;
-
+	
+	//Enemy's movement speed when returning to the ghost house
+	const float ENEMY_RETURN_MOVE_SPEED = 200.f;
+	
 	//Number of safety frames which depends on the enemies' lowest movement speed to prevent the enemies from glitching
 	const int NUMBER_OF_SAFETY_FRAMES = ((int)(0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) < 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME)) ? 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME) + 1 : 0.96f / (ENEMY_FRIGHTENED_MOVE_SPEED * LOWEST_TIME_PER_FRAME);
 
@@ -289,6 +292,12 @@ namespace pac
 
 	//The time between each state in the enemy frightened mode
 	const sf::Time FRIGHTENED_ANIMATION_TIME = sf::seconds(0.2f);
+
+	//The time between each state in the exploding animation
+	const sf::Time EXPLODING_ANIMATION_TIME = sf::seconds(0.7f);
+
+	//The duration of the death animation
+	const sf::Time DURATION_OF_DEATH = sf::seconds(1.2f);
 
 	//The position of the map in the SFML window
 	const Position MAP_POSITION(144.f, 52.f);
